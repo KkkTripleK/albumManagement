@@ -5,19 +5,15 @@ const express = require('express');
 const app = express();
 const route = express.Router();
 
-route.get('/', (req, res) => {
-    res.send('Home Page');
-});
+route.use(express.json());
+const { urlencoded } = require('express');
 
-route.get('/login', (req, res) => {
-    res.send('Login Page');
-});
+route.use(urlencoded({ extended: true }));
 
-app.post('/login', (req, res, next) => {
+route.use('/login', (req, res) => {
     console.log(req.body);
-    console.log('object');
+    res.send('Send success!');
 });
-
 module.exports = route;
 
 // Định nghĩa các đường link

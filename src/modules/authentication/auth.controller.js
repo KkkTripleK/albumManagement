@@ -28,6 +28,7 @@ function login() {
     result = false;
     return result;
 }
+
 // export
 module.exports = {
     readSelectMode,
