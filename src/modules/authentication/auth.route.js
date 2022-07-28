@@ -1,18 +1,24 @@
 // Định nghĩa các đường link
-//Chuyển req tới Controller
-const express = require('express')
+// Chuyển req tới Controller
+const express = require('express');
+
+const app = express();
 const route = express.Router();
 
 route.get('/', (req, res) => {
-    res.send("Home Page");
-})
+    res.send('Home Page');
+});
 
 route.get('/login', (req, res) => {
-    res.send("Login Page");
-})
+    res.send('Login Page');
+});
 
-route.post('/login', (req, res) => {
-    res.send("Updating");
-    req
-})
+app.post('/login', (req, res, next) => {
+    console.log(req.body);
+    console.log('object');
+});
+
 module.exports = route;
+
+// Định nghĩa các đường link
+// Chuyển req tới Controller

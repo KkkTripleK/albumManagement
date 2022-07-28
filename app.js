@@ -3,10 +3,10 @@ const express = require('express');
 const app = express();
 
 const controlService = require('./src/modules/authentication/auth.controller');
-const controlDB = require('./src/modules/user/user.repository');
+const controlDB = require('./src/modules/users/user.repository');
 const route = require('./src/modules/authentication/auth.route');
 
-app.use(route);
+// app.use(route);
 app.listen(8080);
 // Login or Register
 const selectMode = () => {
@@ -64,5 +64,3 @@ const loginMode = () => {
 };
 
 // selectMode();
-
-console.log('object');
