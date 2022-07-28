@@ -2,19 +2,17 @@
 // Chuyển req tới Controller
 const express = require('express');
 
-const app = express();
-const route = express.Router();
-
-route.use(express.json());
 const { urlencoded } = require('express');
+const authController = require('./auth.controller');
 
+const route = express.Router();
+route.use(express.json());
 route.use(urlencoded({ extended: true }));
 
-route.use('/login', (req, res) => {
+route.post('/login', (req, res) => {
     console.log(req.body);
-    res.send('Send success!');
+    return authController.userLogin(req, res);
 });
-module.exports = route;
-
-// Định nghĩa các đường link
-// Chuyển req tới Controller
+module.exports = {
+    route,
+};

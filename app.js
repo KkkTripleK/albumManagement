@@ -1,21 +1,19 @@
 const express = require('express');
 
 const app = express();
-
 const { urlencoded } = require('express');
 const controlService = require('./src/modules/authentication/auth.controller');
 const controlDB = require('./src/modules/users/user.repository');
-const route = require('./src/modules/authentication/auth.route');
+const { route } = require('./src/modules/authentication/auth.route');
 
-app.use(route);
 app.listen(8080, () => {
     console.log('Server is runing');
 });
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-// Login or Register
+app.use(route);
 
-// not use
+// not useÍ›››
 const selectMode = () => {
     const index = controlService.readSelectMode();
     if (index) {

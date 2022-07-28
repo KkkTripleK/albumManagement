@@ -1,17 +1,15 @@
 // Query dữ liệu, chuyển data qua service
 const readLineSync = require('readline-sync');
-const fs = require('fs');
-
+// const authRoute = require('./auth.route');
 const checkID = require('./auth.validation');
 
-// Lua chon che do
-function readSelectMode() {
-    // console.clear();
-    const mode = ['Login', 'Register'];
-    const index = readLineSync.keyInSelect(mode, 'Xin moi ban lua chon: ') + 1;
-    return index;
-}
+const userLogin = (req, res) => {
+    const userName = req.body.userName;
+    const password = req.body.password;
+    console.log(userName);
+};
 
+// userLogin();
 // Validate
 function validation(data) {
     return checkID.checkID(data);
@@ -31,7 +29,7 @@ function login() {
 
 // export
 module.exports = {
-    readSelectMode,
     login,
+    userLogin,
 };
 // end
