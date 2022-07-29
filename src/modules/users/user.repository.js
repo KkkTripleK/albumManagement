@@ -1,22 +1,21 @@
 const mongoose = require('mongoose');
-const database = require('./user.model');
+const ModelUser = require('./user.model');
 
 const dbURI =
-    'mongodb+srv://khanhhoapso:1232123@cluster0.bi5vf.mongodb.net/userDB?retryWrites=true&w=majority';
-
-const connectDB = mongoose
+    'mongodb+srv://khanhhoapso:1232123@cluster0.laan3.mongodb.net/AlbumMaganement?retryWrites=true&w=majority';
+mongoose
     .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((result) => console.log('DB Connected'))
+    .then(() => console.log('DB Connected'))
     .catch((err) => console.log(err));
 // Verify
-async function verifyAcc(inputID, inputPass) {
-    console.log('_Stage: verify');
-    console.log(inputID);
-    console.log(inputPass);
-    const verifyResult = await database
-        .find({ id: inputID, pass: inputPass })
+async function checkExistAcc(userName, password) {
+    console.log('_Stage: user Repo');
+    console.log(userName);
+    console.log(password);
+    const verifyResult = await ModelUser.find({ userName, password })
         .then((result) => {
             if (result.length) {
+                console.log(result);
                 return true;
             }
             return false;
@@ -24,23 +23,24 @@ async function verifyAcc(inputID, inputPass) {
         .catch((err) => console.log(err));
     return verifyResult;
 }
-
-function sendDB(inputID, inputPass) {
-    console.log('_Stage: sendDB');
-
-    // eslint-disable-next-line new-cap
-    const newDt = new database({
-        id: inputID,
-        pass: inputPass,
-    });
-    newDt
-        .save()
-        .then((result) => console.log(result))
-        .catch((err) => console.log(err));
-}
+// Create User
+// const newAcc = new ModelUser({
+//     userName: 'hoaNK',
+//     password: '1232123',
+//     name: 'Hoa',
+//     email: null,
+//     dob: null,
+//     gender: null,
+//     phone: '0389685830',
+//     isActive: 'No active',
+//     activeCode: null,
+//     jwt: null,
+// });
+// newAcc
+//     .save()
+//     .then((result) => console.log(result))
+//     .catch((err) => console.log(err));
 
 module.exports = {
-    connectDB,
-    verifyAcc,
-    sendDB,
+    checkExistAcc,
 };
