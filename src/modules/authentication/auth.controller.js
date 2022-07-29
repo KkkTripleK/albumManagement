@@ -8,26 +8,6 @@ const userLogin = (req, res) => {
     authService.userLogin(userName, password);
 };
 
-// userLogin();
-// Validate
-// function validation(data) {
-//     return checkID.checkID(data);
-// }
-
-// // login
-// function login() {
-//     let result;
-//     const data = readLineSync.prompt();
-//     if (validation(data)) {
-//         result = true;
-//         return { result, data };
-//     }
-//     result = false;
-//     return result;
-// }
-
-// export
 module.exports = {
     userLogin,
 };
-// end

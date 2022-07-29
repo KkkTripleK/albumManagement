@@ -10,12 +10,9 @@ mongoose
 // Verify
 async function checkExistAcc(userName, password) {
     console.log('_Stage: user Repo');
-    console.log(userName);
-    console.log(password);
     const verifyResult = await ModelUser.find({ userName, password })
         .then((result) => {
             if (result.length) {
-                console.log(result);
                 return true;
             }
             return false;
