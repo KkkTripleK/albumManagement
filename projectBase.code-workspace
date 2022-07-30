@@ -1,0 +1,32 @@
+{
+  "folders": [
+	{
+		"path": "../projectBase"
+	},
+	{
+		"path": "../Nodejs_Test/BT_Lan1/BT_Hoa"
+	},
+	{
+		"path": "."
+	},
+	{
+		"path": "../Nodejs_Test/BT_Lan1/BT_Khanh"
+	},
+	{
+		"path": "../Nodejs_Test/F6/mongoDB"
+	}
+],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": null,
+    "prettier.jsxSingleQuote": false,
+    "prettier.singleQuote": true,
+    "editor.tabSize": 4,
+    "[javascript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    }
+  }
+}

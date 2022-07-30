@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const { urlencoded } = require('express');
 const { route } = require('./src/modules/authentication/auth.route');
+
 const authService = require('./src/modules/authentication/auth.service');
 
 app.listen(process.env.PORT, () => {
