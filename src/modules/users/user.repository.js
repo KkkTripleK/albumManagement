@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
 const ModelUser = require('./user.model');
 
-const dbURI =
-    'mongodb+srv://khanhhoapso:1232123@cluster0.laan3.mongodb.net/AlbumMaganement?retryWrites=true&w=majority';
 mongoose
-    .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(process.env.dbURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
     .then(() => console.log('DB Connected'))
     .catch((err) => console.log(err));
 // Verify
-async function checkExistAcc(userName, password) {
-    console.log('_Stage: user Repo');
-    const verifyResult = await ModelUser.find({ userName, password })
+async function checkExistAcc(username, password) {
+    console.log('_Stage: check Exist Account');
+    const verifyResult = await ModelUser.find({ username, password })
         .then((result) => {
             if (result.length) {
                 return true;
@@ -20,9 +21,31 @@ async function checkExistAcc(userName, password) {
         .catch((err) => console.log(err));
     return verifyResult;
 }
+
+async function checkExistUsername(username) {
+    console.log('_Stage: check Exist Username');
+    const verifyResult = await ModelUser.find({ username })
+        .then((result) => {
+            if (result.length) {
+                console.log(result);
+                console.log('true');
+                return true;
+            }
+            console.log('false');
+            return false;
+        })
+        .catch((err) => console.log(err));
+    return verifyResult;
+}
+
+async function addTokenForUser(username, token) {
+    await ModelUser.updateOne({ username }, { $set: { jwt: token } });
+    // console.log(ModelUser.find({ username }));
+}
+
 // Create User
 // const newAcc = new ModelUser({
-//     userName: 'hoaNK',
+//     username: 'hoaNK',
 //     password: '1232123',
 //     name: 'Hoa',
 //     email: null,
@@ -40,4 +63,6 @@ async function checkExistAcc(userName, password) {
 
 module.exports = {
     checkExistAcc,
+    checkExistUsername,
+    addTokenForUser,
 };

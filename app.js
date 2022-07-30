@@ -1,69 +1,19 @@
+require('dotenv').config({ path: './src/configs/.env' });
 const express = require('express');
 
 const app = express();
 const { urlencoded } = require('express');
-const controlService = require('./src/modules/authentication/auth.controller');
-const controlDB = require('./src/modules/users/user.repository');
 const { route } = require('./src/modules/authentication/auth.route');
+const authService = require('./src/modules/authentication/auth.service');
 
-app.listen(8080, () => {
+app.listen(process.env.PORT, () => {
     console.log('Server is runing');
 });
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(route);
 
-// not use
-// const selectMode = () => {
-//     const index = controlService.readSelectMode();
-//     if (index) {
-//         switch (index) {
-//             case 1:
-//                 loginMode();
-//                 break;
-//             case 2:
-//                 registerMode();
-//                 break;
-//             default:
-//                 break;
-//         }
-//     } else {
-//         console.log('See you!');
-//     }
-// };
-// // Login Mode
-// const loginMode = () => {
-//     let dataInput;
-//     let inputID;
-//     let inputPass;
-//     // Input
-//     console.log('Mời bạn nhập ID: ');
-//     do {
-//         dataInput = controlService.login();
-//         if (dataInput.result) {
-//             inputID = dataInput.data;
-//         } else {
-//             console.log('ID chưa phù hợp, vui lòng nhập lại.');
-//         }
-//     } while (!dataInput.result);
-//     console.log('Password: ');
-//     do {
-//         dataInput = controlService.login();
-//         if (dataInput.result) {
-//             inputPass = dataInput.data;
-//         } else {
-//             console.log('Password chưa phù hợp, vui lòng nhập lại.');
-//         }
-//     } while (!dataInput.result);
-//     // Verify
-//     const connectDB = async () => {
-//         await controlDB.connectDB;
-//         const result = await controlDB.verifyAcc(inputID, inputPass);
-//         if (result) {
-//             console.log('Dang nhap thanh cong!');
-//         } else {
-//             console.log('Tai khoan hoac mat khau sai');
-//         }
-//     };
-//     connectDB();
-// };
+// authService.verifyTokenExpired(
+// eslint-disable-next-line max-len
+//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImhvYU5LIiwiaWF0IjoxNjU5MTUyMTIwLCJleHAiOjE2NTkxNTIxNDB9.QAUHuRjeNgD7_DTpWhp1693v5IqsJp843k8OmBHRUaw'
+// );

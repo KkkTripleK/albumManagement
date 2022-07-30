@@ -1,9 +1,17 @@
 // Kiểm tra sự tồn tại của Acc, đẩy data xuống repo
-const authService = require('../authentication/auth.service');
 const userRepo = require('./user.repository');
 
-function checkExistAcc(userName, password) {
+function checkExistAcc(username, password) {
     console.log('_Stage: user Service');
-    return userRepo.checkExistAcc(userName, password);
+    return userRepo.checkExistAcc(username, password);
 }
-module.exports = { checkExistAcc };
+
+function userRegister(username, password, name, email, dob, gender, phone) {
+    const result = userRepo.checkExistUsername(username);
+    console.log(result);
+}
+
+module.exports = {
+    checkExistAcc,
+    userRegister,
+};
