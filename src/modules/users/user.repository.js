@@ -19,7 +19,7 @@ async function checkExistAcc(username, password) {
 }
 
 async function checkExistUsername(username) {
-    console.log('_Stage: check Exist Username');
+    console.log('______Stage: check Exist Username______');
     const verifyResult = await ModelUser.find({ username });
     if (verifyResult.length) {
         return true;
@@ -29,40 +29,41 @@ async function checkExistUsername(username) {
 
 async function addTokenForUser(username, token) {
     await ModelUser.updateOne({ username }, { $set: { jwt: token } });
-    // console.log(ModelUser.find({ username }));
 }
 
-function createNewUser(username, password, name, email, dob, gender, phone) {
+async function createNewUser(username, password, name, email, dob, gender, phone, isActive, activeCode, jwt) {
+    console.log('______Stage: Create New User______');
     if (password.length && name.length && email.length) {
         const newUser = new ModelUser({
             username,
             password,
             name,
             email,
-            // dob: null,
-            // gender: null,
-            // phone: '0389685830',
-            isActive: 'No active',
-            // activeCode: null,
-            // jwt: null,
+            dob,
+            gender,
+            phone,
+            isActive: false,
+            activeCode,
+            jwt,
         });
-        console.log('newUser');
-        console.log(newUser);
-        newUser
+        await newUser
             .save()
             .catch((err) => {
                 console.log(err);
-                return err;
+                return false;
             })
             .then(() => {
-                console.log('=> Create new User successful!');
+                console.log('➤➤➤ Create new User successful!');
                 return true;
             });
-    } else {
-        console.log('=> Please fill password, name and email!');
-        return false;
+        return newUser;
     }
-    return createNewUser;
+    console.log('➤➤➤ Please fill password, name and email!');
+    return false;
+}
+
+async function activeUser(username) {
+    await ModelUser.updateOne({ username }, { $set: { isActive: true } });
 }
 
 module.exports = {
@@ -70,4 +71,5 @@ module.exports = {
     checkExistUsername,
     addTokenForUser,
     createNewUser,
+    activeUser,
 };

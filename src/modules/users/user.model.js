@@ -1,5 +1,3 @@
-// Tạo Schema user
-
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -22,7 +20,7 @@ const dataSchema = new Schema(
         dob: { type: Date },
         gender: { type: String },
         phone: { type: String, required: false },
-        isActive: { type: String, required: true },
+        isActive: { type: Boolean, required: true },
         activeCode: { type: String },
         jwt: { type: String, required: false },
     },

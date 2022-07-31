@@ -13,10 +13,11 @@
         "no-console": "off",
         "no-use-before-define": "warn",
         "no-undef": "warn",
-        "no-unused-vars": "warn",
+        "no-unused-vars": "off",
         "prefer-destructuring": "off",
         "operator-linebreak": "off",
         "comma-dangle": "off",
-        "max-len": "off"
+        "max-len": "off",
+        "object-curly-newline": "off"
     }
 }

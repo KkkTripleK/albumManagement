@@ -3,14 +3,16 @@ const express = require('express');
 
 const app = express();
 const { urlencoded } = require('express');
-const { route } = require('./src/routers/auth.route');
+const { authRoute } = require('./src/modules/authentication/auth.route');
+const { userRoute } = require('./src/modules/users/user.route');
 
 app.listen(process.env.PORT, () => {
     console.log('___Server is RUNING!');
 });
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
-app.use(route);
+app.use(authRoute);
+app.use(userRoute);
 
 // const authService = require('./src/modules/authentication/auth.service');
 // authService.verifyTokenExpired(

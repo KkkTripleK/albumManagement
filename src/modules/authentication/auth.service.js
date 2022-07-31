@@ -3,37 +3,41 @@ const jwt = require('jsonwebtoken');
 const userRepo = require('../users/user.repository');
 
 function createAccessToken(username) {
-    console.log('_Stage: Create Access Token');
+    console.log('______Stage: Create Access Token______');
     return jwt.sign({ username }, process.env.privateKey, { expiresIn: '1h' });
 }
 
 async function userLogin(username, password) {
-    console.log('_Stage: auth Service');
+    console.log('______Stage: Auth Service______');
     const result = await userRepo.checkExistAcc(username, password);
     if (result) {
         const token = createAccessToken(username);
-        console.log(`Access token: ${token}`);
+        console.log(`➤➤➤ Access token: ${token}`);
         userRepo.addTokenForUser(username, token);
-        console.log('Login successful!');
+        console.log('➤➤➤ Login successful!');
         return true;
     }
-    console.log('Invalid username or password!');
+    console.log('➤➤➤Invalid username or password!');
     return false;
 }
 
 function verifyTokenExpired(token) {
-    console.log('_Stage: verify Token Expired');
+    console.log('______Stage: Verify Token Expired______');
     jwt.verify(token, process.env.privateKey, (err) => {
         if (err) {
             console.log(err);
         } else {
-            console.log('Token is ok!');
+            console.log('➤➤➤ Token is ok!');
         }
     });
 }
 
+function jwtDecoded(token) {
+    return jwt.decode(token);
+}
 module.exports = {
     userLogin,
     verifyTokenExpired,
     createAccessToken,
+    jwtDecoded,
 };
