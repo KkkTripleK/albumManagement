@@ -1,17 +1,17 @@
-// Kiểm tra xem user và pass đã đúng chưa --> call user service
-// Cung cấp token để đăng nhập nếu như đã nhập đúng --> JWT
 require('dotenv').config({ path: './src/configs/.env' });
 const jwt = require('jsonwebtoken');
-const userService = require('../users/user.service');
 const userRepo = require('../users/user.repository');
+
+function createAccessToken(username) {
+    console.log('_Stage: Create Access Token');
+    return jwt.sign({ username }, process.env.privateKey, { expiresIn: '1h' });
+}
 
 async function userLogin(username, password) {
     console.log('_Stage: auth Service');
-    const result = await userService.checkExistAcc(username, password);
+    const result = await userRepo.checkExistAcc(username, password);
     if (result) {
-        const token = jwt.sign({ username }, process.env.privateKey, {
-            expiresIn: '20s',
-        });
+        const token = createAccessToken(username);
         console.log(`Access token: ${token}`);
         userRepo.addTokenForUser(username, token);
         console.log('Login successful!');
@@ -35,4 +35,5 @@ function verifyTokenExpired(token) {
 module.exports = {
     userLogin,
     verifyTokenExpired,
+    createAccessToken,
 };

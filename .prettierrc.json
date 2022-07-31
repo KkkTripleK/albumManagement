@@ -1,5 +1,7 @@
 {
-  "tabWidth": 4,
-  "singleQuote": true,
-  "useTabs": false
+    "tabWidth": 4,
+    "singleQuote": true,
+    "useTabs": false,
+    "max_line_lengt": 120,
+    "printWidth": 120
 }
