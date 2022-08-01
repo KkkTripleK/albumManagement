@@ -20,12 +20,12 @@ const dataSchema = new Schema(
         dob: { type: Date },
         gender: { type: String },
         phone: { type: String, required: false },
-        isActive: { type: Boolean, required: true },
-        activeCode: { type: String },
+        isActive: { type: Boolean, required: true, default: false },
+        activeCode: { type: String, default: '0000' },
         jwt: { type: String, required: false },
     },
     { timestamps: true }
 );
 
-const userSchema = mongoose.model('User Table', dataSchema);
+const userSchema = mongoose.model('User', dataSchema);
 module.exports = userSchema;

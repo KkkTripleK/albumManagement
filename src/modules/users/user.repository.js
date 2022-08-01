@@ -9,26 +9,37 @@ mongoose
     .then(() => console.log('___Database is CONNECTED!'))
     .catch((err) => console.log(err));
 
+async function findUserInfo(username) {
+    const resultFindUser = await ModelUser.findOne({ username });
+    return resultFindUser;
+}
+
 async function checkExistAcc(username, password) {
-    console.log('_Stage: check Exist Account');
+    console.log('______Stage: Check Exist Account______');
     const verifyResult = await ModelUser.count({ username, password });
     if (verifyResult) {
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 async function checkExistUsername(username) {
-    console.log('______Stage: check Exist Username______');
-    const verifyResult = await ModelUser.find({ username });
-    if (verifyResult.length) {
-        return true;
-    }
-    return false;
+    console.log('______Stage: Check Exist Username______');
+    const resultCount = await ModelUser.count({ username });
+    return resultCount !== 0;
 }
 
 async function addTokenForUser(username, token) {
     await ModelUser.updateOne({ username }, { $set: { jwt: token } });
+}
+
+async function updateParam(username, param) {
+    try {
+        await ModelUser.updateOne({ username }, { $set: param });
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 async function createNewUser(username, password, name, email, dob, gender, phone, isActive, activeCode, jwt) {
@@ -66,10 +77,18 @@ async function activeUser(username) {
     await ModelUser.updateOne({ username }, { $set: { isActive: true } });
 }
 
+async function getEmail(username) {
+    const verifyResult = await ModelUser.findOne({ username });
+    return verifyResult.email;
+}
+
 module.exports = {
     checkExistAcc,
     checkExistUsername,
     addTokenForUser,
     createNewUser,
     activeUser,
+    getEmail,
+    updateParam,
+    findUserInfo,
 };

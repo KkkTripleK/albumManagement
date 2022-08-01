@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto-js');
 const authService = require('../authentication/auth.service');
 const userRepo = require('./user.repository');
+const createOTP = require('../../common/createOTP');
 
 async function sendMail(username, email) {
     await nodemailer.createTestAccount();
@@ -12,17 +13,18 @@ async function sendMail(username, email) {
         secure: true,
         auth: {
             user: 'nguyenkhanhhoapso@gmail.com',
-            pass: 'txbabkrlzbgzomox',
+            pass: process.env.emailPassword,
         },
     };
     const transporter = nodemailer.createTransport(smtpConfig);
-    const token = authService.createAccessToken(username);
-    const verifyURL = `<a href = "http://localhost:8080/register/verify/?username=${username}&token=${token}"> Verify by this link! </a>`;
+    const OTP = createOTP.randomOTP();
+    await userRepo.updateParam(username, { activeCode: OTP.toString() });
+    const link = `Your OPT number is: ${OTP}`;
     await transporter.sendMail({
         from: '"HoaNK " <nguyenkhanhhoapso@gmail.com>',
         to: email,
-        subject: 'Verify Your Account 🥰',
-        html: verifyURL,
+        subject: 'OPT number!',
+        html: link,
     });
 }
 
@@ -30,18 +32,18 @@ async function createNewUser(resultCheckExistUsername, username, password, name,
     if (!resultCheckExistUsername) {
         const resultCreateNewUser = await userRepo.createNewUser(username, password, name, email, dob, gender, phone);
         if (resultCreateNewUser) {
-            sendMail(username, email)
+            await sendMail(username, email)
                 .then(() => {
-                    console.log('➤➤➤Please check your email!');
+                    console.log('➤➤➤ Please check your email!');
                     return true;
                 })
                 .catch(() => {
-                    console.log('➤➤➤failed');
+                    console.log('➤➤➤ Failed');
                     return false;
                 });
         }
     } else {
-        console.log('➤➤➤Your username is not available!');
+        console.log('➤➤➤ Your username is not available!');
         return false;
     }
     return createNewUser;
@@ -62,14 +64,76 @@ async function userRegister(req, res) {
         phone
     );
     return resultCreateNewUser;
-    // console.log(`resultUserRegister: ${resultUserRegister}`);
-    // return resultUserRegister;
 }
 
 async function verifyUser(req, res) {
-    const { username, token } = req.query;
-    if (authService.jwtDecoded(token).username === username) {
-        userRepo.activeUser(username);
+    try {
+        const { username, activeCode } = req.body;
+        const userInfo = await userRepo.findUserInfo(username);
+        if (userInfo.activeCode === activeCode && userInfo.isActive === false) {
+            userRepo.updateParam(username, { isActive: 'true' });
+        } else if (userInfo.activeCode === activeCode && userInfo.isActive === true) {
+            const OTP = createOTP.randomOTP();
+            userRepo.updateParam(username, { password: OTP.toString() });
+        }
+    } catch (err) {
+        res.send(err);
+    }
+}
+
+async function getEmail(username) {
+    const resultGetEmail = await userRepo.getEmail(username);
+    return resultGetEmail;
+}
+
+async function forgotPassword(req, res) {
+    const { username } = req.body;
+    const resultCheckExistUsername = await userRepo.checkExistUsername(username);
+    if (!resultCheckExistUsername) {
+        console.log('➤➤➤ Username not correclt!');
+        res.status(400).send('➤➤➤ Username not correclt!');
+    } else {
+        console.log('➤➤➤ Exist username');
+        const email = await getEmail(username);
+        sendMail(username, email);
+    }
+}
+
+async function changePassword(req, res) {
+    console.log('Change Password');
+    try {
+        const { username, password, newpassword } = req.body;
+        const passwordCrypto = crypto.SHA256(password).toString(crypto.enc.Hex);
+        const newPasswordCrypto = crypto.SHA256(newpassword).toString(crypto.enc.Hex);
+        const info = await userRepo.findUserInfo(username);
+        if (info.password === passwordCrypto && passwordCrypto !== newPasswordCrypto) {
+            userRepo.updateParam(username, { password: newPasswordCrypto.toString() });
+            console.log('➤➤➤ Your password is updated');
+            res.status(200).send('Your password is updated');
+        } else {
+            console.log('➤➤➤ Password and New Password not correclt!');
+            res.status(400).send('Password and New Password not correclt!');
+        }
+    } catch (err) {
+        res.status(400).send(err);
+    }
+}
+
+async function changeInfo(req, res) {
+    try {
+        const { username, jwt } = req.body;
+        const param = req.body;
+        delete param.username;
+        delete param.jwt;
+        const info = await userRepo.findUserInfo(username);
+        if (info.jwt === jwt) {
+            userRepo.updateParam(username, param);
+            res.status(200).send('Update SUCCESFUL!');
+        } else {
+            res.status(400).send('Update FAILED!');
+        }
+    } catch (err) {
+        res.status(400).send('Update FAILED!');
     }
 }
 
@@ -77,4 +141,7 @@ module.exports = {
     userRegister,
     sendMail,
     verifyUser,
+    forgotPassword,
+    changePassword,
+    changeInfo,
 };

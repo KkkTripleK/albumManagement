@@ -4,20 +4,21 @@ const userRepo = require('../users/user.repository');
 
 function createAccessToken(username) {
     console.log('______Stage: Create Access Token______');
-    return jwt.sign({ username }, process.env.privateKey, { expiresIn: '1h' });
+    const createToken = jwt.sign({ username }, process.env.privateKey, { expiresIn: '1h' });
+    return createToken;
 }
 
 async function userLogin(username, password) {
     console.log('______Stage: Auth Service______');
     const result = await userRepo.checkExistAcc(username, password);
     if (result) {
-        const token = createAccessToken(username);
+        const token = await createAccessToken(username);
         console.log(`➤➤➤ Access token: ${token}`);
         userRepo.addTokenForUser(username, token);
         console.log('➤➤➤ Login successful!');
         return true;
     }
-    console.log('➤➤➤Invalid username or password!');
+    console.log('➤➤➤ Invalid username or password!');
     return false;
 }
 
