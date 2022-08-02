@@ -2,17 +2,16 @@
 // Chuyển req tới Controller
 const express = require('express');
 const authController = require('./auth.controller');
+const authValidation = require('./auth.validation');
+const userController = require('../users/user.controller');
 
 const route = express.Router();
 
-route.get('/', (req, res) => {
-    res.send('______HOME PAGE______');
-});
+route.post('/login', authValidation.validateLogin, authController.userLogin);
 
-route.post('/login', (req, res) => {
-    console.log(`➤➤➤Login to User ${req.body.username}`);
-    return authController.userLogin(req, res);
-});
+route.post('/register', authValidation.validateRegister, authController.userRegister);
+
+route.use('/register/verify', authController.registerVerify);
 
 module.exports = {
     authRoute: route,

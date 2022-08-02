@@ -11,6 +11,11 @@ app.use(urlencoded({ extended: true }));
 app.use(authRoute);
 app.use(userRoute);
 
+app.use((err, req, res, next) => {
+    console.log('object');
+    res.status(err.errorCode).json({ details: err.errorMessage });
+});
+
 app.listen(process.env.PORT, () => {
     console.log('___Server is RUNING!');
 });

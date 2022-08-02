@@ -18,7 +18,7 @@ const dataSchema = new Schema(
         name: { type: String },
         email: { type: String, required: false },
         dob: { type: Date },
-        gender: { type: String },
+        gender: { type: String, default: 'Men' },
         phone: { type: String, required: false },
         isActive: { type: Boolean, required: true, default: false },
         activeCode: { type: String, default: '0000' },

@@ -19,6 +19,7 @@
         "comma-dangle": "off",
         "max-len": "off",
         "object-curly-newline": "off",
-        "no-else-return": "off"
+        "no-else-return": "off",
+        "no-param-reassign": "off"
     }
 }
