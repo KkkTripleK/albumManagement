@@ -30,7 +30,6 @@ async function addTokenForUser(username, token) {
 }
 
 async function updateParam(username, param) {
-    console.log('1');
     await ModelUser.updateOne({ username }, { $set: param });
 }
 

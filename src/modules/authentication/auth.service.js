@@ -13,17 +13,17 @@ async function verifyUser(req, res) {
         if (userInfo.activeCode === activeCode && userInfo.isActive === false) {
             console.log('1');
             userRepo.updateParam(username, { isActive: 'true' });
-            res.status(200).send('Successful!');
+            res.status(200).send('Verify new user SUCCESFUL!');
         } else if (userInfo.activeCode === activeCode && userInfo.isActive === true) {
             const OTP = createOTP.randomOTP();
             const newPassword = crypto.createHash('SHA256').update(OTP.toString()).digest('hex');
             userRepo.updateParam(username, { password: newPassword });
-            res.status(200).send('Successful!');
+            res.status(200).send(`Your new password is: ${OTP}`);
         } else {
-            throw new Error(500, 'Verify user failed');
+            throw new Error(500, 'Verify new user FAILED!');
         }
     } catch (error) {
-        throw new Error(500, 'Verify user failed');
+        throw new Error(500, 'Verify new user FAILED!');
     }
 }
 
@@ -56,30 +56,27 @@ async function createNewUser(userInfo) {
     try {
         const resultCreateNewUser = await userRepo.createNewUser(userInfo);
         if (!resultCreateNewUser) {
-            throw new Error(500, 'User already exist!!');
+            throw new Error(500, 'Username already EXIST!');
         } else {
-            console.log('send mail');
             await sendMail(username, email);
         }
     } catch (error) {
-        throw new Error(500, 'create user fail');
+        throw new Error(500, 'Create user FAILED!');
     }
 }
 
 const userRegister = async (req, res) => {
     const { username } = req.body;
     try {
-        console.log('Auth Service userRegister');
         const resultCheckExistUsername = await userRepo.checkExistUsername(username);
-        console.log(`resultCheckExistUsername: ${resultCheckExistUsername}`);
         if (resultCheckExistUsername) {
-            throw new Error(500, 'User already exist!');
+            throw new Error(500, 'User already EXSIT!');
         } else {
-            console.log('Create New User...');
             await createNewUser(req.body);
+            res.status(200).send('Create new user SUCCESSFUL!');
         }
     } catch (error) {
-        throw new Error(500, 'Create user fail');
+        throw new Error(500, 'Create user FAILED!');
     }
 };
 
@@ -88,7 +85,7 @@ const registerVerify = async (req, res) => {
         await verifyUser(req, res);
         res.status(200).send('Activate your account SUCCESSFUL!');
     } catch (err) {
-        throw new Error(500, 'Active your account Failed!');
+        throw new Error(500, 'Active your account FAILED!');
     }
 };
 
@@ -105,7 +102,7 @@ async function userLogin(username, password) {
         userRepo.addTokenForUser(username, token);
         return token;
     } else {
-        throw new Error(500, 'Your account not exist!');
+        throw new Error(500, 'Your account not EXIST!');
     }
 }
 
@@ -114,7 +111,7 @@ function verifyTokenExpired(token) {
         if (err) {
             console.log(err);
         } else {
-            console.log('➤➤➤ Token is ok!');
+            console.log('➤➤➤ Token is OK!');
         }
     });
 }

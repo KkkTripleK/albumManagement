@@ -15,17 +15,16 @@ const userLogin = async (req, res, next) => {
 const userRegister = async (req, res, next) => {
     try {
         await authService.userRegister(req, res);
-        res.status(200).send('Register SUCCESSFUL!');
     } catch (error) {
         next(error);
     }
 };
 
-const registerVerify = async (req, res) => {
+const registerVerify = async (req, res, next) => {
     try {
         await authService.verifyUser(req, res);
-    } catch (err) {
-        res.status(400).send(err);
+    } catch (error) {
+        next(error);
     }
 };
 

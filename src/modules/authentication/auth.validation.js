@@ -4,7 +4,8 @@ const { Error } = require('../../errors/error-handling');
 
 const inputSchema = joi.object({
     username: joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9]{5,}$')).required(),
-    password: joi.string().pattern(new RegExp('(?=.*[a-zA-Z])[a-zA-Z0-9]{5,}$')).required(),
+    password: joi.string().required(),
+    // password: joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9]{5,}$')).required(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'vn'] } }),
 });
 
