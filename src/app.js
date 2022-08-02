@@ -5,11 +5,17 @@ const app = express();
 const { urlencoded } = require('express');
 const { authRoute } = require('./modules/authentication/auth.route');
 const { userRoute } = require('./modules/users/user.route');
+const { photoRoute } = require('./modules/photos/photo.route');
+const { albumRoute } = require('./modules/albums/album.route');
+const { moongose } = require('./configs/database');
+const helperJWT = require('./helpers/helper.jwt');
 
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(authRoute);
 app.use(userRoute);
+app.use(photoRoute);
+app.use(albumRoute);
 
 app.use((err, req, res, next) => {
     console.log('object');
@@ -19,6 +25,7 @@ app.use((err, req, res, next) => {
 app.listen(process.env.PORT, () => {
     console.log('___Server is RUNING!');
 });
+
 // const authService = require('./src/modules/authentication/auth.service');
 // authService.verifyTokenExpired(
 // eslint-disable-next-line max-len

@@ -13,7 +13,6 @@ const verifyForgotPassword = async (req, res, next) => {
     try {
         await authService.verifyUser(req, res);
     } catch (error) {
-        console.log(error);
         next(error);
     }
 };

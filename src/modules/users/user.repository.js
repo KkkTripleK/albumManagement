@@ -1,14 +1,4 @@
-const mongoose = require('mongoose');
 const ModelUser = require('./user.model');
-const { Error } = require('../../errors/error-handling');
-
-mongoose
-    .connect(process.env.dbURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log('___Database is CONNECTED!'))
-    .catch((err) => console.log(err));
 
 async function findUserInfo(username) {
     const resultFindUser = await ModelUser.findOne({ username });

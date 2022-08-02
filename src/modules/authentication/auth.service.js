@@ -11,7 +11,6 @@ async function verifyUser(req, res) {
         const { username, activeCode } = req.body;
         const userInfo = await userRepo.findUserInfo(username);
         if (userInfo.activeCode === activeCode && userInfo.isActive === false) {
-            console.log('1');
             userRepo.updateParam(username, { isActive: 'true' });
             res.status(200).send('Verify new user SUCCESFUL!');
         } else if (userInfo.activeCode === activeCode && userInfo.isActive === true) {
@@ -96,7 +95,6 @@ function createAccessToken(username) {
 
 async function userLogin(username, password) {
     const result = await userRepo.checkExistAcc(username, password);
-    console.log(result);
     if (result) {
         const token = await createAccessToken(username);
         userRepo.addTokenForUser(username, token);
@@ -104,16 +102,6 @@ async function userLogin(username, password) {
     } else {
         throw new Error(500, 'Your account not EXIST!');
     }
-}
-
-function verifyTokenExpired(token) {
-    jwt.verify(token, process.env.privateKey, (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('➤➤➤ Token is OK!');
-        }
-    });
 }
 
 function jwtDecoded(token) {
@@ -124,7 +112,6 @@ module.exports = {
     userRegister,
     registerVerify,
     userLogin,
-    verifyTokenExpired,
     createAccessToken,
     jwtDecoded,
     verifyUser,
