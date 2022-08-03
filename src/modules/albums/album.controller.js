@@ -16,7 +16,6 @@ const createAlbum = async (req, res, next) => {
 
 const showAlbum = async (req, res, next) => {
     try {
-        console.log('1');
         await albumService.showAlbum(req, res);
         res.status(200).send('Show album!');
     } catch (error) {

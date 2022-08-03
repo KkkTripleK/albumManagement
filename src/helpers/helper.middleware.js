@@ -2,7 +2,7 @@ const helperJWT = require('./helper.jwt');
 const { Error } = require('../errors/error-handling');
 const albumService = require('../modules/albums/album.service');
 const albumUserService = require('../modules/users-albums/user-album.service');
-// const authController = require('../modules/albums/album.controller');
+const userAlbumController = require('../modules/users-albums/user-album.controller');
 
 const checkAccessToken = (req, res, next) => {
     const accessToken = req.headers.authorization;
@@ -38,8 +38,17 @@ const checkAuthor = async (req, res, next) => {
     }
 };
 
+const checkUserAlbumExist = async (req, res, next) => {
+    try {
+        userAlbumController.checkUserAlbumExist(req, res);
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     checkAccessToken,
     checkAlbumExsit,
     checkAuthor,
+    checkUserAlbumExist,
 };

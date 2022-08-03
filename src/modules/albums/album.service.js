@@ -22,7 +22,6 @@ const createAlbum = async (req, res) => {
 };
 
 const showAlbum = async (req, res) => {
-    console.log('2');
     try {
         await albumRepo.showAlbum(req, res);
     } catch (err) {

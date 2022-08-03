@@ -34,7 +34,7 @@ async function changePassword(req, res) {
             userRepo.updateParam(username, { password: newPasswordCrypto.toString() });
             res.status(200).send('Your password is updated');
         } else {
-            res.status(400).send('Password and New Password not correclt!');
+            res.status(500).send('Password and New Password not correclt!');
         }
     } catch (error) {
         throw new Error(500, 'Password and New Password not correclt!');
@@ -52,10 +52,10 @@ async function changeInfo(req, res) {
             userRepo.updateParam(username, param);
             res.status(200).send('Update SUCCESFUL!');
         } else {
-            res.status(400).send('Update FAILED!');
+            res.status(500).send('Update FAILED!');
         }
     } catch (err) {
-        res.status(400).send('Update FAILED!');
+        throw new Error(400, 'Update FAILED!');
     }
 }
 

@@ -1,37 +1,28 @@
-const ModelAlbum = require('../albums/album.model');
 const ModelUserAlbum = require('./user-album.model');
 
-const createUserAlbum = async (username, albumID) => {
-    try {
-        const newUserAlbum = new ModelUserAlbum({ username, albumID });
-        await newUserAlbum.save();
-    } catch (error) {
-        console.log(error);
-        throw new Error(500, 'Create User Album Failed!');
-    }
+const createUserAlbum = async (username, albumID, role) => {
+    const newUserAlbum = new ModelUserAlbum({ username, albumID, role });
+    await newUserAlbum.save();
 };
 
 const checkAuthor = async (req, res) => {
-    try {
-        const { albumID } = req.body;
-        const resultFindID = await ModelUserAlbum.findOne({ albumID });
-        req.body.role = resultFindID.role;
-    } catch (error) {
-        throw new Error(500, 'Check Author Failed');
-    }
+    const { albumID } = req.body;
+    const resultFindID = await ModelUserAlbum.findOne({ albumID });
+    req.body.role = resultFindID.role;
 };
 
 const deleteUserAlbum = async (id) => {
-    console.log({ id });
-    try {
-        await ModelUserAlbum.deleteOne({ id });
-    } catch (error) {
-        throw new Error(500, 'Can not delete your Album!');
-    }
+    await ModelUserAlbum.deleteOne({ id });
+};
+
+const checkUserAlbumExist = async (req, res) => {
+    const resultCheckExist = await ModelUserAlbum.count(req.body);
+    return resultCheckExist;
 };
 
 module.exports = {
     createUserAlbum,
     checkAuthor,
     deleteUserAlbum,
+    checkUserAlbumExist,
 };

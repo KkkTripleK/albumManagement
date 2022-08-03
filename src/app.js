@@ -7,6 +7,7 @@ const { authRoute } = require('./modules/authentication/auth.route');
 const { userRoute } = require('./modules/users/user.route');
 const { photoRoute } = require('./modules/photos/photo.route');
 const { albumRoute } = require('./modules/albums/album.route');
+const { userAlbumRoute } = require('./modules/users-albums/user-album.route');
 const { moongose } = require('./configs/database');
 const helperJWT = require('./helpers/helper.jwt');
 
@@ -16,6 +17,7 @@ app.use(authRoute);
 app.use(userRoute);
 app.use(photoRoute);
 app.use(albumRoute);
+app.use(userAlbumRoute);
 
 app.use((err, req, res, next) => {
     console.log('object');
