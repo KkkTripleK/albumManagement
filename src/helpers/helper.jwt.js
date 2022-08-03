@@ -1,17 +1,15 @@
 const jwt = require('jsonwebtoken');
 
 function verifyAccessToken(token) {
-    jwt.verify(token, process.env.privateKey, (err) => {
-        if (err) {
-            return false;
-        } else {
-            return true;
-        }
-    });
+    try {
+        jwt.verify(token, process.env.privateKey);
+    } catch (error) {
+        throw new Error('JWT error');
+    }
 }
 
 function decodeAccessToken(token) {
-    console.log(jwt.decode(token));
+    return jwt.decode(token);
 }
 
 module.exports = {
