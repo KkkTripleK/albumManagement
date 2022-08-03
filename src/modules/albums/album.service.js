@@ -1,6 +1,7 @@
 const albumController = require('./album.controller');
 const albumRepo = require('./album.repository');
 const { Error } = require('../../errors/error-handling');
+const userAlbumRepo = require('../users-albums/user-album.repository');
 
 const checkExsitAlbum = async (req, res) => {
     try {
@@ -20,9 +21,37 @@ const createAlbum = async (req, res) => {
     }
 };
 
+const showAlbum = async (req, res) => {
+    console.log('2');
+    try {
+        await albumRepo.showAlbum(req, res);
+    } catch (err) {
+        throw new Error(500, 'Show album Failed!');
+    }
+};
+
+const updateAlbum = async (req, res) => {
+    if (req.body.role === 'Author') {
+        try {
+            const albumID = req.body.albumID;
+            const param = req.body;
+            delete param.albumID;
+            delete param.username;
+            delete param.role;
+            console.log(param);
+            console.log(albumID);
+            await albumRepo.updateAlbum(albumID, param);
+        } catch (error) {
+            throw new Error(500, 'Update album Failed!');
+        }
+    } else {
+        throw new Error(500, 'You don not have permission to update album!');
+    }
+};
+
 const deleteAlbum = async (req, res) => {
     try {
-        albumRepo.deleteAlbum(req.body.albumID);
+        await albumRepo.deleteAlbum(req.body.albumID);
     } catch (error) {
         throw new Error(500, 'Delete album Failed!');
     }
@@ -30,6 +59,8 @@ const deleteAlbum = async (req, res) => {
 
 module.exports = {
     createAlbum,
+    showAlbum,
+    updateAlbum,
     deleteAlbum,
     checkExsitAlbum,
 };

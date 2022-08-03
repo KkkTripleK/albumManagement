@@ -1,3 +1,4 @@
+const ModelAlbum = require('../albums/album.model');
 const ModelUserAlbum = require('./user-album.model');
 
 const createUserAlbum = async (username, albumID) => {
@@ -15,7 +16,6 @@ const checkAuthor = async (req, res) => {
         const { albumID } = req.body;
         const resultFindID = await ModelUserAlbum.findOne({ albumID });
         req.body.role = resultFindID.role;
-        console.log(req.body);
     } catch (error) {
         throw new Error(500, 'Check Author Failed');
     }

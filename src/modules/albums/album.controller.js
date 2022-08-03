@@ -14,6 +14,25 @@ const createAlbum = async (req, res, next) => {
     }
 };
 
+const showAlbum = async (req, res, next) => {
+    try {
+        console.log('1');
+        await albumService.showAlbum(req, res);
+        res.status(200).send('Show album!');
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateAlbum = async (req, res, next) => {
+    try {
+        await albumService.updateAlbum(req, res);
+        res.status(200).send('Update album!');
+    } catch (error) {
+        next(error);
+    }
+};
+
 const deleteAlbum = async (req, res, next) => {
     try {
         if (req.body.role === 'Author') {
@@ -30,5 +49,7 @@ const deleteAlbum = async (req, res, next) => {
 
 module.exports = {
     createAlbum,
+    showAlbum,
+    updateAlbum,
     deleteAlbum,
 };

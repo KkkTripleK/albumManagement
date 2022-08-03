@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const dataSchema = new Schema(
     {
         nameAlbum: { type: String, required: true },
-        desription: { type: String },
+        description: { type: String, default: 'none' },
         privateAlbum: { type: Boolean, required: true, default: true },
     },
     { timestamps: true }

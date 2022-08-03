@@ -11,6 +11,15 @@ route.post(
     albumController.createAlbum
 );
 
+route.post('/album/show', helperMiddleware.checkAccessToken, albumController.showAlbum);
+
+route.post(
+    '/album/update',
+    helperMiddleware.checkAccessToken,
+    helperMiddleware.checkAuthor,
+    albumController.updateAlbum
+);
+
 route.post(
     '/album/delete',
     helperMiddleware.checkAccessToken,
