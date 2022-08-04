@@ -10,7 +10,6 @@ const checkExsitAlbum = async (req, res) => {
 };
 
 const createAlbum = async (albumInfo) => {
-    console.log('albumInfo');
     const newAlbum = new ModelAlbum(albumInfo);
     await newAlbum.save();
     return newAlbum;
@@ -25,20 +24,11 @@ const showAlbum = async (req, res) => {
 };
 
 const updateAlbum = async (albumID, param) => {
-    try {
-        await ModelAlbum.updateOne({ albumID }, { $set: param });
-    } catch (error) {
-        console.log(error);
-    }
+    await ModelAlbum.updateOne({ albumID }, { $set: param });
 };
 
 const deleteAlbum = async (id) => {
-    console.log({ id });
-    try {
-        await ModelAlbum.deleteOne({ id });
-    } catch (error) {
-        throw new Error(500, 'Can not delete your Album!');
-    }
+    await ModelAlbum.deleteOne({ id });
 };
 
 module.exports = {

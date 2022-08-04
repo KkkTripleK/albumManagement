@@ -35,8 +35,6 @@ const updateAlbum = async (req, res) => {
             delete param.albumID;
             delete param.username;
             delete param.role;
-            console.log(param);
-            console.log(albumID);
             await albumRepo.updateAlbum(albumID, param);
         } catch (error) {
             throw new Error(500, 'Update album Failed!');

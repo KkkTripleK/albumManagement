@@ -20,7 +20,6 @@ route.post(
     helperMiddleware.checkOwner,
     helperMiddleware.checkAuthor,
     helperMiddleware.checkUserAlbumExist,
-
     photoController.addToAlbum
 );
 

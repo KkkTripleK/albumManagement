@@ -40,10 +40,15 @@ const checkAuthor = async (req, res, next) => {
 };
 
 const checkPhotoAlbumExist = async (req, res, next) => {
-    const filename = req.body.filename;
-    const resultCheckPhotoAlbumExsit = await photoRepo.checkPhotoAlbumExist(filename);
-    if (resultCheckPhotoAlbumExsit) {
-        throw new Error(500, 'Invited Failed!');
+    try {
+        const filename = req.body.filename;
+        const resultCheckPhotoAlbumExsit = await photoRepo.checkPhotoAlbumExist(filename);
+        if (resultCheckPhotoAlbumExsit) {
+            throw new Error(500, 'Invited Failed!');
+        }
+        next();
+    } catch (error) {
+        next(error);
     }
 };
 

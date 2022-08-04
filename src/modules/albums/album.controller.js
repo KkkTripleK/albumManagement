@@ -11,8 +11,6 @@ const createAlbum = async (req, res, next) => {
         await userAlbumRepo.createUserAlbum(username, albumID, role);
         res.status(200).send('Create Succesful!');
     } catch (error) {
-        console.log(error);
-        console.log('3');
         next(error);
     }
 };

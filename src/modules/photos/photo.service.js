@@ -37,15 +37,14 @@ const deletePhoto = async (req, res) => {
         await photoRepo.deletePhoto(path);
         res.status(200).send('Delete photo Successful!');
     } catch (error) {
-        console.log(error);
         throw new Error(500, 'Delete photo Failed!');
     }
 };
 
 const addToAlbum = async (req, res) => {
-    console.log(req.body);
     try {
         await photoRepo.addToAlbum(req, res);
+        res.status(200).send('Add photo to Album Successful!');
     } catch (error) {
         throw new Error(500, 'Add photo to album Failed!');
     }

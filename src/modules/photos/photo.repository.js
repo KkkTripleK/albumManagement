@@ -7,13 +7,11 @@ const uploadPhoto = (req, res) => {
 };
 
 const uploadPhotoToDB = async (photoInfo) => {
-    console.log(photoInfo);
     const newPhotoDB = new ModelPhoto(photoInfo);
     await newPhotoDB.save();
 };
 
 const deletePhoto = async (path) => {
-    console.log(path);
     await ModelPhoto.deleteOne({ path });
     fs.unlink(path.toString(), (err) => {
         if (err) console.log(err);
@@ -26,7 +24,8 @@ const findPath = async (filename) => {
 };
 
 const addToAlbum = async (req, res) => {
-    //
+    const { filename, albumID } = req.body;
+    await ModelPhoto.updateOne({ filename }, { $set: { albumID } });
 };
 
 const checkOwner = async (req, res) => {

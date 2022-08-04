@@ -4,6 +4,7 @@ const authService = require('../authentication/auth.service');
 const forgotPassword = async (req, res, next) => {
     try {
         await userService.forgotPassword(req, res);
+        res.status(200).send('Send email SUCCESSFUL, please check your email!');
     } catch (error) {
         next(error);
     }

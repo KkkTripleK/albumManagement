@@ -17,7 +17,7 @@ async function forgotPassword(req, res) {
             authService.sendMail(username, email);
             res.status(200).send('Send email SUCCESSFUL, please check your email!');
         } else {
-            res.status(500).send('Username not CORRECT!');
+            throw new Error(500, 'Username not CORRECT or already Exist!');
         }
     } catch (error) {
         throw new Error(500, 'Username not CORRECT or already Exist!');
@@ -27,7 +27,6 @@ async function forgotPassword(req, res) {
 async function changePassword(req, res) {
     try {
         const { username, password, newpassword } = req.body;
-        // console.log(password);
         const passwordCrypto = crypto.SHA256(password).toString(crypto.enc.Hex);
         const newPasswordCrypto = crypto.SHA256(newpassword).toString(crypto.enc.Hex);
         const info = await userRepo.findUserInfo(username);
@@ -38,7 +37,6 @@ async function changePassword(req, res) {
             throw new Error(500, 'Password and New Password not correclt!');
         }
     } catch (error) {
-        console.log(error);
         throw new Error(500, 'Password and New Password not correclt!');
     }
 }
@@ -54,7 +52,7 @@ async function changeInfo(req, res) {
             userRepo.updateParam(username, param);
             res.status(200).send('Update SUCCESFUL!');
         } else {
-            res.status(500).send('Update FAILED!');
+            throw new Error(400, 'Update FAILED!');
         }
     } catch (err) {
         throw new Error(400, 'Update FAILED!');
