@@ -1,33 +1,50 @@
-const multer = require('multer');
-const modelPhoto = require('./photo.model');
+const fs = require('fs');
+const ModelPhoto = require('./photo.model');
 
-const uploadPhoto = async (req, res) => {
-    //
+const uploadPhoto = (req, res) => {
+    const file = req.file;
+    res.send(file);
 };
-const deletePhoto = async (req, res) => {
-    //
+
+const uploadPhotoToDB = async (photoInfo) => {
+    console.log(photoInfo);
+    const newPhotoDB = new ModelPhoto(photoInfo);
+    await newPhotoDB.save();
+};
+
+const deletePhoto = async (path) => {
+    console.log(path);
+    await ModelPhoto.deleteOne({ path });
+    fs.unlink(path.toString(), (err) => {
+        if (err) console.log(err);
+    });
+};
+
+const findPath = async (filename) => {
+    const photoInfo = await ModelPhoto.findOne({ filename });
+    return photoInfo.path;
 };
 
 const addToAlbum = async (req, res) => {
     //
 };
-module.exports = {
-    uploadPhoto,
-    deletePhoto,
-    addToAlbum,
+
+const checkOwner = async (req, res) => {
+    const resulCheckOwner = await ModelPhoto.count(req.body);
+    return resulCheckOwner !== 0;
 };
 
-// const fileStorage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null,'./image');
-//     },
-//     filename: (req, file, cb) =>{
-//         cb(null, Date.now() + '--' + file.originalname)
-//     }
-// });
+const checkPhotoAlbumExist = async (filename) => {
+    const photoInfo = await ModelPhoto.findOne({ filename });
+    return photoInfo.albumID !== undefined;
+};
 
-// const upload = multer({ storage: fileStorage});
-// app.post("/single", upload.single("image"), (req,res) => {
-//     console.log(req.file);
-//     res.send("Single file is uploaded");
-// })
+module.exports = {
+    uploadPhoto,
+    uploadPhotoToDB,
+    deletePhoto,
+    addToAlbum,
+    checkOwner,
+    findPath,
+    checkPhotoAlbumExist,
+};

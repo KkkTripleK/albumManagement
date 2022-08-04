@@ -1,30 +1,18 @@
 const userAlbumService = require('./user-album.service');
 
-const createUserAlbum = async (req, res, next) => {
-    try {
-        userAlbumService.createUserAlbum(req, res);
-    } catch (error) {
-        next(error);
-    }
-};
-
 const inviteToAlbum = async (req, res, next) => {
+    console.log('1');
     try {
-        userAlbumService.inviteToAlbum(req, res);
+        await userAlbumService.inviteToAlbum(req, res);
+        console.log('7');
     } catch (error) {
+        console.log('6');
+
         next(error);
     }
 };
 
-const checkUserAlbumExist = async (req, res, next) => {
-    try {
-        userAlbumService.checkUserAlbumExist(req, res);
-    } catch (error) {
-        next(error);
-    }
-};
 module.exports = {
-    createUserAlbum,
+    // createUserAlbum,
     inviteToAlbum,
-    checkUserAlbumExist,
 };

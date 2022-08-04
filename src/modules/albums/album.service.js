@@ -1,7 +1,5 @@
-const albumController = require('./album.controller');
 const albumRepo = require('./album.repository');
 const { Error } = require('../../errors/error-handling');
-const userAlbumRepo = require('../users-albums/user-album.repository');
 
 const checkExsitAlbum = async (req, res) => {
     try {
@@ -12,7 +10,7 @@ const checkExsitAlbum = async (req, res) => {
     }
 };
 
-const createAlbum = async (req, res) => {
+const createNewAlbum = async (req, res) => {
     try {
         const newAlbum = await albumRepo.createAlbum(req.body);
         req.body.albumID = newAlbum.id;
@@ -57,7 +55,7 @@ const deleteAlbum = async (req, res) => {
 };
 
 module.exports = {
-    createAlbum,
+    createNewAlbum,
     showAlbum,
     updateAlbum,
     deleteAlbum,

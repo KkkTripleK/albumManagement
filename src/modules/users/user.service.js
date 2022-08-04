@@ -27,16 +27,18 @@ async function forgotPassword(req, res) {
 async function changePassword(req, res) {
     try {
         const { username, password, newpassword } = req.body;
+        // console.log(password);
         const passwordCrypto = crypto.SHA256(password).toString(crypto.enc.Hex);
         const newPasswordCrypto = crypto.SHA256(newpassword).toString(crypto.enc.Hex);
         const info = await userRepo.findUserInfo(username);
-        if (info.password === passwordCrypto && passwordCrypto !== newPasswordCrypto) {
+        if (info?.password === passwordCrypto && passwordCrypto !== newPasswordCrypto) {
             userRepo.updateParam(username, { password: newPasswordCrypto.toString() });
             res.status(200).send('Your password is updated');
         } else {
-            res.status(500).send('Password and New Password not correclt!');
+            throw new Error(500, 'Password and New Password not correclt!');
         }
     } catch (error) {
+        console.log(error);
         throw new Error(500, 'Password and New Password not correclt!');
     }
 }

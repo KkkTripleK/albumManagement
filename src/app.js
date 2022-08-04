@@ -20,7 +20,6 @@ app.use(albumRoute);
 app.use(userAlbumRoute);
 
 app.use((err, req, res, next) => {
-    console.log('object');
     res.status(err.errorCode).json({ details: err.errorMessage });
 });
 

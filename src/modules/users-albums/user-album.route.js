@@ -10,6 +10,7 @@ route.post(
     helperMiddleware.checkUserAlbumExist,
     helperMiddleware.checkAccessToken,
     helperMiddleware.checkAuthor,
+    helperMiddleware.checkInvited,
     userAlbumController.inviteToAlbum
 );
 

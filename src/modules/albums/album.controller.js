@@ -2,14 +2,17 @@ const albumService = require('./album.service');
 const userAlbumController = require('../users-albums/user-album.controller');
 const { Error } = require('../../errors/error-handling');
 const userAlbumService = require('../users-albums/user-album.service');
+const userAlbumRepo = require('../users-albums/user-album.repository');
 
 const createAlbum = async (req, res, next) => {
     try {
-        await albumService.createAlbum(req, res);
-        await userAlbumController.createUserAlbum(req, res, next);
-        console.log('Create new albumm Successful!');
+        await albumService.createNewAlbum(req, res);
+        const { username, albumID, role } = req.body;
+        await userAlbumRepo.createUserAlbum(username, albumID, role);
         res.status(200).send('Create Succesful!');
     } catch (error) {
+        console.log(error);
+        console.log('3');
         next(error);
     }
 };

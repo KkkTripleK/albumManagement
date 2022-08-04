@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const dataSchema = new Schema(
     {
-        id: { type: String, required: true },
-        name: { type: String, required: true },
-        path: { type: String, required: true },
+        filename: { type: String, required: true },
+        username: { type: String, required: true },
         description: { type: String },
+        path: { type: String, required: true },
+        albumID: { type: String },
     },
     { timestamps: true }
 );

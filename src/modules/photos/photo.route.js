@@ -4,26 +4,26 @@ const helperMiddleware = require('../../helpers/helper.middleware');
 
 const route = express.Router();
 
-route.post(
-    '/photo/upload',
-    helperMiddleware.checkAccessToken,
-    helperMiddleware.checkAuthor,
-    photoController.uploadPhoto
-);
+route.post('/photo/upload', helperMiddleware.checkAccessToken, photoController.uploadPhoto);
 
 route.post(
     '/photo/delete',
     helperMiddleware.checkAccessToken,
-    helperMiddleware.checkAuthor,
+    helperMiddleware.checkOwner,
     photoController.deletePhoto
 );
 
 route.post(
     '/photo/addToAlbum',
     helperMiddleware.checkAccessToken,
+    helperMiddleware.checkPhotoAlbumExist,
+    helperMiddleware.checkOwner,
     helperMiddleware.checkAuthor,
-    photoController.deletePhoto
+    helperMiddleware.checkUserAlbumExist,
+
+    photoController.addToAlbum
 );
+
 module.exports = {
     photoRoute: route,
 };

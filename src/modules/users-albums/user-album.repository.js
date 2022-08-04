@@ -16,8 +16,10 @@ const deleteUserAlbum = async (id) => {
 };
 
 const checkUserAlbumExist = async (req, res) => {
-    const resultCheckExist = await ModelUserAlbum.count(req.body);
-    return resultCheckExist;
+    const username = req.body.invited;
+    const { albumID } = req.body;
+    const resultCheckExist = await ModelUserAlbum.count({ username, albumID });
+    return resultCheckExist !== 0;
 };
 
 module.exports = {

@@ -10,6 +10,7 @@ const checkExsitAlbum = async (req, res) => {
 };
 
 const createAlbum = async (albumInfo) => {
+    console.log('albumInfo');
     const newAlbum = new ModelAlbum(albumInfo);
     await newAlbum.save();
     return newAlbum;
@@ -19,7 +20,7 @@ const showAlbum = async (req, res) => {
     const { username } = req.body;
     const album = await ModelUserAlbum.find({ username }).populate({ path: 'albumID', model: ModelAlbum });
     album.forEach((item, index) => {
-        console.log(`Number ${index}: ${item.albumID} `);
+        console.log(`Number ${index}: ${item.albumID.nameAlbum} `);
     });
 };
 
@@ -40,7 +41,6 @@ const deleteAlbum = async (id) => {
     }
 };
 
-// const findAlbumID = async();
 module.exports = {
     checkExsitAlbum,
     createAlbum,

@@ -19,7 +19,7 @@ const verifyForgotPassword = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
     try {
-        userService.changePassword(req, res);
+        await userService.changePassword(req, res);
     } catch (error) {
         next(error);
     }
@@ -27,7 +27,7 @@ const changePassword = async (req, res, next) => {
 
 const changeInfo = async (req, res, next) => {
     try {
-        userService.changeInfo(req, res);
+        await userService.changeInfo(req, res);
     } catch (error) {
         next(error);
     }

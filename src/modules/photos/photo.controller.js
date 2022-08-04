@@ -2,15 +2,15 @@ const photoService = require('./photo.service');
 
 const uploadPhoto = async (req, res, next) => {
     try {
-        photoService.uploadPhoto(req, res);
+        await photoService.uploadPhoto(req, res);
     } catch (error) {
         next(error);
     }
 };
 
-const deletePhoto = (req, res, next) => {
+const deletePhoto = async (req, res, next) => {
     try {
-        photoService.deletePhoto(req, res);
+        await photoService.deletePhoto(req, res);
     } catch (error) {
         next(error);
     }
