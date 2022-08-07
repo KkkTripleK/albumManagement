@@ -1,0 +1,294 @@
+openapi: 3.0.0
+info:
+    title: Album Management
+    description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+    version: 0.1.9
+servers:
+    - url: http://localhost:8080/
+      description: Localhost
+
+#######################___________Add Components___________#######################
+components:
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: jwt
+#######################___________USER___________#######################
+paths:
+    /login:
+        post:
+            tags:
+                - Users
+            summary: Login to the Album Management
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+            responses:
+                '200': # Login successful
+                    description: Login successful!
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Login Failed!
+                default:
+                    description: Unexpected error
+    /register:
+        post:
+            tags:
+                - Users
+            summary: Register
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                                - name
+                                - email
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                email:
+                                    type: string
+                                name:
+                                    type: string
+            responses:
+                '200': # Login successful
+                    description: Login successful!
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Register Failed!
+                default:
+                    description: Unexpected error
+    /register/verify:
+        post:
+            tags:
+                - Users
+            summary: Register - Verify
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - activeCode
+                            properties:
+                                username:
+                                    type: string
+                                activeCode:
+                                    type: string
+            responses:
+                '200': # Verify successful
+                    description: Verify successful!
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Verify Failed!
+                default:
+                    description: Unexpected error
+    /forgot-password:
+        post:
+            tags:
+                - Users
+            summary: forgot - password
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                            properties:
+                                username:
+                                    type: string
+            responses:
+                '200': # Verify successful
+                    description: Verify successful!
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Verify Failed!
+                default:
+                    description: Unexpected error
+    /forgot-password/verify:
+        post:
+            tags:
+                - Users
+            summary: forgot - password
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - activeCode
+                            properties:
+                                username:
+                                    type: string
+                                activeCode:
+                                    type: string
+            responses:
+                '200': # Forgot password successful
+                    description: Forgot password successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Forgot password Failed!
+                default:
+                    description: Unexpected error
+
+    /change-password:
+        post:
+            tags:
+                - Users
+            summary: Change password
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - password
+                                - newpassword
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                newpassword:
+                                    type: string
+            responses:
+                '200': # Change password successful
+                    description: Change password successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Change password Failed!
+                default:
+                    description: Unexpected error
+    /change-info:
+        post:
+            tags:
+                - Users
+            summary: Change info
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - username
+                                - jwt
+                            properties:
+                                username:
+                                    type: string
+                                jwt:
+                                    type: string
+                                name:
+                                    type: string
+                                dob:
+                                    type: string
+                                phone:
+                                    type: string
+                                gender:
+                                    type: string
+            responses:
+                '200': # Change info successful
+                    description: Change info successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Change info Failed!
+                default:
+                    description: Unexpected error
+
+    #######################___________Album___________#######################
+    /album/create:
+        post:
+            security:
+                - BearerAuth: []
+            tags:
+                - Album
+            summary: Create album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - nameAlbum
+                            properties:
+                                nameAlbum:
+                                    type: string
+                                desciption:
+                                    type: string
+                                role:
+                                    type: string
+            responses:
+                '200': # Create album successful
+                    description: Create album successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Create album Failed!
+                default:
+                    description: Unexpected error

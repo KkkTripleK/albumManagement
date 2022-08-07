@@ -4,12 +4,7 @@ const helperMiddleware = require('../../helpers/helper.middleware');
 
 const route = express.Router();
 
-route.post(
-    '/album/create',
-    helperMiddleware.checkAccessToken,
-    helperMiddleware.checkAlbumExsit,
-    albumController.createAlbum
-);
+route.post('/album/create', helperMiddleware.checkAccessToken, albumController.createAlbum);
 
 route.post('/album/show', helperMiddleware.checkAccessToken, albumController.showAlbum);
 

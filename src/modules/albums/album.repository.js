@@ -3,8 +3,7 @@ const ModelAlbum = require('./album.model');
 const userAlbumRepo = require('../users-albums/user-album.repository');
 const ModelUserAlbum = require('../users-albums/user-album.model');
 
-const checkExsitAlbum = async (req, res) => {
-    const { nameAlbum } = req.body;
+const checkAlbumExsit = async (nameAlbum) => {
     const resultCount = await ModelAlbum.count({ nameAlbum });
     return resultCount !== 0;
 };
@@ -32,7 +31,7 @@ const deleteAlbum = async (id) => {
 };
 
 module.exports = {
-    checkExsitAlbum,
+    checkAlbumExsit,
     createAlbum,
     showAlbum,
     updateAlbum,

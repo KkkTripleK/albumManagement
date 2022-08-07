@@ -9,7 +9,7 @@ async function checkExistAcc(username, password) {
     const verifyResult = await ModelUser.count({ username, password });
     return verifyResult !== 0;
 }
-
+// check xem con cho nao dung ko
 async function checkExistUsername(username) {
     const resultCount = await ModelUser.count({ username });
     return resultCount !== 0;
@@ -29,14 +29,20 @@ async function createNewUser(userInfo) {
     return true;
 }
 
+async function checkActiveUser(username) {
+    const resultCheckActiveUser = await ModelUser.findOne({ username });
+    return resultCheckActiveUser.isActive;
+}
+
 async function activeUser(username) {
     await ModelUser.updateOne({ username }, { $set: { isActive: true } });
 }
 
-async function getEmail(username) {
-    const verifyResult = await ModelUser.findOne({ username });
-    return verifyResult.email;
-}
+// // xem co con o dau dung ko?
+// async function getEmail(username) {
+//     const verifyResult = await ModelUser.findOne({ username });
+//     return verifyResult.email;
+// }
 
 module.exports = {
     checkExistAcc,
@@ -44,7 +50,8 @@ module.exports = {
     addTokenForUser,
     createNewUser,
     activeUser,
-    getEmail,
+    checkActiveUser,
+    // getEmail,
     updateParam,
     findUserInfo,
 };

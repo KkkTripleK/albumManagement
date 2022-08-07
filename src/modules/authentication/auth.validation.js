@@ -1,6 +1,6 @@
 /* eslint-disable prefer-regex-literals */
 const joi = require('joi');
-const { Error } = require('../../errors/error-handling');
+const { ErrorHandling } = require('../../errors/error-handling');
 
 const inputSchema = joi.object({
     username: joi.string().pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9]{5,}$')).required(),
@@ -10,6 +10,7 @@ const inputSchema = joi.object({
 });
 
 const validateLogin = async (req, res, next) => {
+    console.log(req.body);
     const { username, password, email } = req.body;
     try {
         await inputSchema.validateAsync({
@@ -19,7 +20,7 @@ const validateLogin = async (req, res, next) => {
         });
         next();
     } catch (error) {
-        next(new Error(400, error.details[0].message));
+        next(new ErrorHandling(400, error.details[0].message));
     }
 };
 
@@ -33,7 +34,7 @@ const validateRegister = async (req, res, next) => {
         });
         next();
     } catch (error) {
-        next(new Error(400, error.details[0].message));
+        next(new ErrorHandling(400, error.details[0].message));
     }
 };
 

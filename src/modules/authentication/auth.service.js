@@ -1,31 +1,50 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config({ path: './src/configs/.env' });
+require('dotenv').config({ path: './src/configs/.env' }); // defind 1 lan tai root
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const userRepo = require('../users/user.repository');
-const { Error } = require('../../errors/error-handling');
+const { ErrorHandling } = require('../../errors/error-handling');
 const createOTP = require('../../common/createOTP');
 
-async function verifyUser(req, res) {
-    try {
-        const { username, activeCode } = req.body;
-        const userInfo = await userRepo.findUserInfo(username);
-        if (userInfo.activeCode === activeCode && userInfo.isActive === false) {
-            userRepo.updateParam(username, { isActive: 'true' });
-            res.status(200).send('Verify new user SUCCESFUL!');
-        } else if (userInfo.activeCode === activeCode && userInfo.isActive === true) {
-            const OTP = createOTP.randomOTP();
-            const newPassword = crypto.createHash('SHA256').update(OTP.toString()).digest('hex');
-            userRepo.updateParam(username, { password: newPassword });
-            res.status(200).send(`Your new password is: ${OTP}`);
-        } else {
-            throw new Error(500, 'Verify new user FAILED!');
-        }
-    } catch (error) {
-        throw new Error(500, 'Verify new user FAILED!');
+async function activeUser(req, res) {
+    const { username, activeCode } = req.body;
+    const userInfo = await userRepo.findUserInfo(username);
+    if (userInfo === null) {
+        throw new ErrorHandling(500, 'Can not find your username!');
+    } else if (userInfo.activeCode === activeCode) {
+        userRepo.updateParam(username, { isActive: 'true' });
+    } else {
+        throw new ErrorHandling(500, 'Your active code is not correct!');
     }
 }
 
+const checkActiveUser = async (username) => {
+    const resultCheckActiveUser = await userRepo.checkActiveUser(username);
+    if (!resultCheckActiveUser) {
+        throw new ErrorHandling(401, 'Please active your account!');
+    }
+};
+
+async function verifyForgotPassword(req, res) {
+    const username = req.body.username;
+    await checkActiveUser(username);
+    const userInfo = await userRepo.findUserInfo(username);
+    console.log(userInfo.activeCode);
+    console.log(req.body.activeCode);
+    if (userInfo === null) {
+        throw new ErrorHandling(400, 'Can not find your username!');
+    } else if (userInfo.activeCode !== req.body.activeCode) {
+        throw new ErrorHandling(500, 'Your active code is not correct!');
+    }
+    const OTP = createOTP.randomOTP();
+    // hash password -> middleware -> presave
+    const newPassword = crypto.createHash('SHA256').update(OTP.toString()).digest('hex');
+    //
+    await userRepo.updateParam(username, { password: newPassword });
+    return OTP;
+}
+
+// send mail move to helper folder
 async function sendMail(username, email) {
     await nodemailer.createTestAccount();
     const smtpConfig = {
@@ -34,6 +53,7 @@ async function sendMail(username, email) {
         secure: true,
         auth: {
             user: 'nguyenkhanhhoapso@gmail.com',
+            // user move to env folder
             pass: process.env.emailPassword,
         },
     };
@@ -50,9 +70,9 @@ async function sendMail(username, email) {
 }
 
 async function createNewUser(userInfo) {
-    userInfo.password = crypto.createHash('SHA256').update(userInfo.password).digest('hex');
     const { username, email } = userInfo;
     try {
+        userInfo.password = crypto.createHash('SHA256').update(userInfo.password).digest('hex');
         const resultCreateNewUser = await userRepo.createNewUser(userInfo);
         if (!resultCreateNewUser) {
             throw new Error(500, 'Username already EXIST!');
@@ -60,7 +80,7 @@ async function createNewUser(userInfo) {
             await sendMail(username, email);
         }
     } catch (error) {
-        throw new Error(500, 'Create user FAILED!');
+        throw new ErrorHandling(500, 'Create user FAILED!');
     }
 }
 
@@ -69,27 +89,31 @@ const userRegister = async (req, res) => {
     try {
         const resultCheckExistUsername = await userRepo.checkExistUsername(username);
         if (resultCheckExistUsername) {
-            throw new Error(500, 'User already EXSIT!');
+            throw new ErrorHandling(500, 'User already EXSIT!');
         } else {
             await createNewUser(req.body);
             res.status(200).send('Create new user SUCCESSFUL!');
         }
     } catch (error) {
-        throw new Error(500, 'Create user FAILED!');
+        if (error instanceof ErrorHandling) {
+            throw error;
+        } else {
+            throw new ErrorHandling(500, 'Create user FAILED!');
+        }
     }
 };
 
 const registerVerify = async (req, res) => {
     try {
-        await verifyUser(req, res);
+        await activeUser(req, res);
         res.status(200).send('Activate your account SUCCESSFUL!');
     } catch (err) {
-        throw new Error(500, 'Active your account FAILED!');
+        throw new ErrorHandling(500, 'Active your account FAILED!');
     }
 };
 
-function createAccessToken(username) {
-    const createToken = jwt.sign({ username }, process.env.privateKey, { expiresIn: '1h' });
+async function createAccessToken(username) {
+    const createToken = jwt.sign({ username }, process.env.privateKey, { expiresIn: '10h' });
     return createToken;
 }
 
@@ -100,7 +124,7 @@ async function userLogin(username, password) {
         userRepo.addTokenForUser(username, token);
         return token;
     } else {
-        throw new Error(500, 'Your account not EXIST!');
+        throw new ErrorHandling(500, 'Username or Password is not correct!');
     }
 }
 
@@ -111,9 +135,11 @@ function jwtDecoded(token) {
 module.exports = {
     userRegister,
     registerVerify,
+    checkActiveUser,
     userLogin,
     createAccessToken,
+    verifyForgotPassword,
     jwtDecoded,
-    verifyUser,
+    activeUser,
     sendMail,
 };

@@ -1,11 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function verifyAccessToken(token) {
-    try {
-        jwt.verify(token, process.env.privateKey);
-    } catch (error) {
-        throw new Error('JWT error');
-    }
+    return jwt.verify(token, process.env.privateKey);
 }
 
 function decodeAccessToken(token) {

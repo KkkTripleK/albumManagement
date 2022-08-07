@@ -1,9 +1,6 @@
-// Định nghĩa các đường link
-// Chuyển req tới Controller
 const express = require('express');
 const authController = require('./auth.controller');
 const authValidation = require('./auth.validation');
-const userController = require('../users/user.controller');
 
 const route = express.Router();
 

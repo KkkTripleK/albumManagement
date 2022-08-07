@@ -1,15 +1,18 @@
 const express = require('express');
 const userController = require('./user.controller');
+const helperMiddleware = require('../../helpers/helper.middleware');
 
 const route = express.Router();
 
-route.post('/forgot-password', userController.forgotPassword);
+route.get('/user/show-info', helperMiddleware.checkAccessToken, userController.showInfo); // ok
 
-route.post('/forgot-password/verify', userController.verifyForgotPassword);
+route.post('/user/forgot-password', userController.forgotPassword); // ok
 
-route.post('/change-password', userController.changePassword);
+route.post('/user/forgot-password/verify', userController.verifyForgotPassword); // ok
 
-route.post('/change-info', userController.changeInfo);
+route.post('/user/change-password', helperMiddleware.checkAccessToken, userController.changePassword); // ok
+
+route.post('/user/change-info', helperMiddleware.checkAccessToken, userController.changeInfo); // ok
 
 module.exports = {
     userRoute: route,

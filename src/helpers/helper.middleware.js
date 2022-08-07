@@ -1,32 +1,28 @@
 const helperJWT = require('./helper.jwt');
-const { Error } = require('../errors/error-handling');
-const albumService = require('../modules/albums/album.service');
+const { ErrorHandling } = require('../errors/error-handling');
 const userAlbumRepo = require('../modules/users-albums/user-album.repository');
 const userRepo = require('../modules/users/user.repository');
 const photoRepo = require('../modules/photos/photo.repository');
 
-const checkAccessToken = (req, res, next) => {
+const checkAccessToken = async (req, res, next) => {
     const accessToken = req.headers.authorization;
     try {
-        helperJWT.verifyAccessToken(accessToken);
-        const payload = helperJWT.decodeAccessToken(accessToken);
-        req.body.username = payload.username;
+        if (accessToken === undefined) {
+            throw new ErrorHandling(500, 'Please enter your access token!');
+        }
+        const payload = helperJWT.verifyAccessToken(accessToken);
+        req.user = { username: payload.username };
+        const info = await userRepo.findUserInfo(req.user.username);
+        if (info.jwt !== accessToken) {
+            throw new ErrorHandling(500, 'Your access token have been changed!');
+        }
         next();
     } catch (error) {
-        next(new Error(500, 'Access Token is Not Available!'));
-    }
-};
-
-const checkAlbumExsit = async (req, res, next) => {
-    try {
-        const resultCheckExistAlbum = await albumService.checkExsitAlbum(req, res);
-        if (resultCheckExistAlbum) {
-            throw new Error(500, 'Album is Already Exsit!');
+        if (error instanceof ErrorHandling) {
+            throw error;
         } else {
-            next();
+            next(new ErrorHandling(500, 'Access Token is not Correct!'));
         }
-    } catch (error) {
-        next(error);
     }
 };
 
@@ -44,7 +40,7 @@ const checkPhotoAlbumExist = async (req, res, next) => {
         const filename = req.body.filename;
         const resultCheckPhotoAlbumExsit = await photoRepo.checkPhotoAlbumExist(filename);
         if (resultCheckPhotoAlbumExsit) {
-            throw new Error(500, 'Invited Failed!');
+            throw new ErrorHandling(500, 'Invited Failed!');
         }
         next();
     } catch (error) {
@@ -69,7 +65,7 @@ const checkUserAlbumExist = async (req, res, next) => {
     try {
         const result = await userAlbumRepo.checkUserAlbumExist(req, res);
         if (result !== false) {
-            throw new Error(500, 'Invited Failed!');
+            throw new ErrorHandling(500, 'Invited Failed!');
         }
         next();
     } catch (error) {
@@ -81,7 +77,7 @@ const checkOwner = async (req, res, next) => {
     try {
         const resultCheckOwner = photoRepo.checkOwner(req, res);
         if (!resultCheckOwner) {
-            throw new Error(500, 'You are not the Owner!');
+            throw new ErrorHandling(500, 'You are not the Owner!');
         }
         next();
     } catch (error) {
@@ -91,7 +87,6 @@ const checkOwner = async (req, res, next) => {
 
 module.exports = {
     checkAccessToken,
-    checkAlbumExsit,
     checkAuthor,
     checkInvited,
     checkUserAlbumExist,

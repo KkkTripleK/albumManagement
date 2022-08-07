@@ -10,4 +10,4 @@ class ErrorHandling extends Error {
     }
 }
 
-module.exports = { Error: ErrorHandling };
+module.exports = { ErrorHandling };
