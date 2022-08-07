@@ -1,7 +1,7 @@
 const crypto = require('crypto-js');
-const authService = require('../authentication/auth.service');
 const userRepo = require('./user.repository');
 const { ErrorHandling } = require('../../errors/error-handling');
+const helperEmail = require('../../helpers/helper.sendMail');
 
 async function showInfo(req, res) {
     const userInfo = await userRepo.findUserInfo(req.user.username);
@@ -21,7 +21,7 @@ async function forgotPassword(req, res) {
     if (userInfo === null) {
         throw new ErrorHandling(500, 'Can not find your username!');
     } else {
-        authService.sendMail(username, userInfo.email);
+        helperEmail.sendMail(username, userInfo.email);
     }
 }
 

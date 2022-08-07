@@ -9,7 +9,7 @@ async function checkExistAcc(username, password) {
     const verifyResult = await ModelUser.count({ username, password });
     return verifyResult !== 0;
 }
-// check xem con cho nao dung ko
+
 async function checkExistUsername(username) {
     const resultCount = await ModelUser.count({ username });
     return resultCount !== 0;

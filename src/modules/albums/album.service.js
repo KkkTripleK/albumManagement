@@ -1,17 +1,26 @@
 const albumRepo = require('./album.repository');
+const userAlbumRepo = require('../users-albums/user-album.repository');
 const { ErrorHandling } = require('../../errors/error-handling');
 
-const checkAlbumExsit = async (req, res) => {
-    const result = await albumRepo.checkAlbumExsit(req.body.nameAlbum);
-    if (result) {
-        throw new ErrorHandling(500, 'Name of Album already Exsit!');
+const checkAlbumExsit = async (albumID) => {
+    try {
+        const result = await albumRepo.checkAlbumExsit(albumID);
+        if (!result) {
+            throw new ErrorHandling(500, 'AlbumID not exsit!');
+        }
+    } catch (error) {
+        if (error instanceof ErrorHandling) {
+            throw error;
+        } else {
+            throw new ErrorHandling(500, 'AlbumID not exsit!');
+        }
     }
 };
 
 const createNewAlbum = async (req, res) => {
     try {
         const newAlbum = await albumRepo.createAlbum(req.body);
-        req.body.albumID = newAlbum.id;
+        req.user.id = newAlbum.id.toString();
     } catch (error) {
         throw new ErrorHandling(500, 'Create album Failed!');
     }
@@ -19,32 +28,38 @@ const createNewAlbum = async (req, res) => {
 
 const showAlbum = async (req, res) => {
     try {
-        await albumRepo.showAlbum(req, res);
+        return await albumRepo.showAlbum(req.user.username);
     } catch (err) {
         throw new ErrorHandling(500, 'Show album Failed!');
     }
 };
 
-const updateAlbum = async (req, res) => {
-    if (req.body.role === 'Author') {
-        try {
-            const albumID = req.body.albumID;
-            const param = req.body;
-            delete param.albumID;
-            delete param.username;
-            delete param.role;
-            await albumRepo.updateAlbum(albumID, param);
-        } catch (error) {
-            throw new ErrorHandling(500, 'Update album Failed!');
-        }
-    } else {
-        throw new ErrorHandling(500, 'You don not have permission to update album!');
+const checkAuthor = async (req, res) => {
+    try {
+        const resultFindID = await userAlbumRepo.checkAuthor(req.user.username, req.body.albumID);
+        req.user = { role: resultFindID.role };
+    } catch (error) {
+        throw new ErrorHandling(500, 'Can not find your Album!');
     }
 };
 
-const deleteAlbum = async (req, res) => {
+const updateAlbum = async (req, res) => {
+    if (req.user.role !== 'Author') {
+        throw new ErrorHandling(500, 'You do not have permission to update this album!');
+    }
     try {
-        await albumRepo.deleteAlbum(req.body.albumID);
+        const albumID = req.body.albumID;
+        const param = req.body;
+        delete param.albumID;
+        await albumRepo.updateAlbum(albumID, param);
+    } catch (error) {
+        throw new ErrorHandling(500, 'Update album Failed!');
+    }
+};
+
+const deleteAlbum = async (albumID) => {
+    try {
+        await albumRepo.deleteAlbum(albumID);
     } catch (error) {
         throw new ErrorHandling(500, 'Delete album Failed!');
     }
@@ -53,6 +68,7 @@ const deleteAlbum = async (req, res) => {
 module.exports = {
     createNewAlbum,
     showAlbum,
+    checkAuthor,
     updateAlbum,
     deleteAlbum,
     checkAlbumExsit,

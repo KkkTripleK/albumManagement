@@ -1,10 +1,10 @@
-const nodemailer = require('nodemailer');
 require('dotenv').config({ path: './src/configs/.env' }); // defind 1 lan tai root
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const userRepo = require('../users/user.repository');
 const { ErrorHandling } = require('../../errors/error-handling');
 const createOTP = require('../../common/createOTP');
+const helperEmail = require('../../helpers/helper.sendMail');
 
 async function activeUser(req, res) {
     const { username, activeCode } = req.body;
@@ -21,7 +21,7 @@ async function activeUser(req, res) {
 const checkActiveUser = async (username) => {
     const resultCheckActiveUser = await userRepo.checkActiveUser(username);
     if (!resultCheckActiveUser) {
-        throw new ErrorHandling(401, 'Please active your account!');
+        throw new ErrorHandling(401, 'Please active your account before Login!');
     }
 };
 
@@ -44,31 +44,6 @@ async function verifyForgotPassword(req, res) {
     return OTP;
 }
 
-// send mail move to helper folder
-async function sendMail(username, email) {
-    await nodemailer.createTestAccount();
-    const smtpConfig = {
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'nguyenkhanhhoapso@gmail.com',
-            // user move to env folder
-            pass: process.env.emailPassword,
-        },
-    };
-    const transporter = nodemailer.createTransport(smtpConfig);
-    const OTP = createOTP.randomOTP();
-    await userRepo.updateParam(username, { activeCode: OTP.toString() });
-    const link = `Your OPT number is: ${OTP}`;
-    await transporter.sendMail({
-        from: '"HoaNK " <nguyenkhanhhoapso@gmail.com>',
-        to: email,
-        subject: 'OPT number!',
-        html: link,
-    });
-}
-
 async function createNewUser(userInfo) {
     const { username, email } = userInfo;
     try {
@@ -77,7 +52,7 @@ async function createNewUser(userInfo) {
         if (!resultCreateNewUser) {
             throw new Error(500, 'Username already EXIST!');
         } else {
-            await sendMail(username, email);
+            await helperEmail.sendMail(username, email);
         }
     } catch (error) {
         throw new ErrorHandling(500, 'Create user FAILED!');
@@ -90,10 +65,8 @@ const userRegister = async (req, res) => {
         const resultCheckExistUsername = await userRepo.checkExistUsername(username);
         if (resultCheckExistUsername) {
             throw new ErrorHandling(500, 'User already EXSIT!');
-        } else {
-            await createNewUser(req.body);
-            res.status(200).send('Create new user SUCCESSFUL!');
         }
+        await createNewUser(req.body);
     } catch (error) {
         if (error instanceof ErrorHandling) {
             throw error;
@@ -141,5 +114,4 @@ module.exports = {
     verifyForgotPassword,
     jwtDecoded,
     activeUser,
-    sendMail,
 };

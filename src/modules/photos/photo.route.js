@@ -18,8 +18,8 @@ route.post(
     helperMiddleware.checkAccessToken,
     helperMiddleware.checkPhotoAlbumExist,
     helperMiddleware.checkOwner,
-    helperMiddleware.checkAuthor,
-    helperMiddleware.checkUserAlbumExist,
+    // helperMiddleware.checkAuthor,
+    // helperMiddleware.checkUserAlbumExist,
     photoController.addToAlbum
 );
 

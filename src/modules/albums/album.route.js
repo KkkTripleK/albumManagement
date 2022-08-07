@@ -6,21 +6,11 @@ const route = express.Router();
 
 route.post('/album/create', helperMiddleware.checkAccessToken, albumController.createAlbum);
 
-route.post('/album/show', helperMiddleware.checkAccessToken, albumController.showAlbum);
+route.get('/album/show', helperMiddleware.checkAccessToken, albumController.showAlbum);
 
-route.post(
-    '/album/update',
-    helperMiddleware.checkAccessToken,
-    helperMiddleware.checkAuthor,
-    albumController.updateAlbum
-);
+route.post('/album/update', helperMiddleware.checkAccessToken, albumController.updateAlbum);
 
-route.post(
-    '/album/delete',
-    helperMiddleware.checkAccessToken,
-    helperMiddleware.checkAuthor,
-    albumController.deleteAlbum
-);
+route.delete('/album/delete', helperMiddleware.checkAccessToken, albumController.deleteAlbum);
 
 module.exports = {
     albumRoute: route,
