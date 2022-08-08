@@ -6,14 +6,14 @@ const route = express.Router();
 
 route.post('/photo/upload', helperMiddleware.checkAccessToken, photoController.uploadPhoto);
 
-route.post(
+route.delete(
     '/photo/delete',
     helperMiddleware.checkAccessToken,
     helperMiddleware.checkOwner,
     photoController.deletePhoto
 );
 
-route.post(
+route.patch(
     '/photo/addToAlbum',
     helperMiddleware.checkAccessToken,
     helperMiddleware.checkPhotoAlbumExist,

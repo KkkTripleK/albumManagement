@@ -8,7 +8,7 @@ route.post('/album/create', helperMiddleware.checkAccessToken, albumController.c
 
 route.get('/album/show', helperMiddleware.checkAccessToken, albumController.showAlbum);
 
-route.post('/album/update', helperMiddleware.checkAccessToken, albumController.updateAlbum);
+route.patch('/album/update', helperMiddleware.checkAccessToken, albumController.updateAlbum);
 
 route.delete('/album/delete', helperMiddleware.checkAccessToken, albumController.deleteAlbum);
 

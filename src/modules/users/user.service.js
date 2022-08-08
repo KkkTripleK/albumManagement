@@ -54,9 +54,16 @@ async function changePassword(req, res) {
 async function changeInfo(req, res) {
     try {
         const param = req.body;
+        if (req.body.username.length !== 0 || req.body.password.length !== 0) {
+            throw new ErrorHandling(400, 'Can not change username and password!');
+        }
         userRepo.updateParam(req.user.username, param);
-    } catch (err) {
-        throw new ErrorHandling(400, 'Update FAILED!');
+    } catch (error) {
+        if (error instanceof ErrorHandling) {
+            throw error;
+        } else {
+            throw new ErrorHandling(400, 'Update FAILED!');
+        }
     }
 }
 

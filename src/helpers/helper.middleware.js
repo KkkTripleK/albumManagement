@@ -5,15 +5,18 @@ const userRepo = require('../modules/users/user.repository');
 const photoRepo = require('../modules/photos/photo.repository');
 
 const checkAccessToken = async (req, res, next) => {
-    const accessToken = req.headers.authorization;
     try {
-        if (accessToken === undefined) {
+        const accessToken = req.headers.authorization.split(' ');
+        if (accessToken[0] !== 'Bearer') {
+            throw new ErrorHandling(500, 'Access Token is not Correct!');
+        }
+        if (accessToken[1] === undefined) {
             throw new ErrorHandling(500, 'Please enter your access token!');
         }
-        const payload = helperJWT.verifyAccessToken(accessToken);
+        const payload = helperJWT.verifyAccessToken(accessToken[1]);
         req.user = { username: payload.username };
         const info = await userRepo.findUserInfo(req.user.username);
-        if (info.jwt !== accessToken) {
+        if (info.jwt !== accessToken[1]) {
             throw new ErrorHandling(500, 'Your access token have been changed!');
         }
         next();

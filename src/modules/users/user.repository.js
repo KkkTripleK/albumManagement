@@ -1,3 +1,4 @@
+const { ErrorHandling } = require('../../errors/error-handling');
 const ModelUser = require('./user.model');
 
 async function findUserInfo(username) {
@@ -20,7 +21,11 @@ async function addTokenForUser(username, token) {
 }
 
 async function updateParam(username, param) {
-    await ModelUser.updateOne({ username }, { $set: param });
+    try {
+        await ModelUser.updateOne({ username }, { $set: param });
+    } catch (error) {
+        throw new ErrorHandling(500, 'The attribute not exist!');
+    }
 }
 
 async function createNewUser(userInfo) {

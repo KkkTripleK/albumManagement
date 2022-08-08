@@ -7,19 +7,19 @@ servers:
     - url: http://localhost:8080/
       description: Localhost
 
-#######################___________Add Components___________#######################
+    #######################___________Add Components___________#######################
 components:
     securitySchemes:
         BearerAuth:
             type: http
             scheme: bearer
-            bearerFormat: jwt
-#######################___________USER___________#######################
+            bearerFormat: JWT
+    #######################___________Authorization___________#######################
 paths:
     /login:
         post:
             tags:
-                - Users
+                - Authorization
             summary: Login to the Album Management
             description:
             requestBody:
@@ -51,7 +51,7 @@ paths:
     /register:
         post:
             tags:
-                - Users
+                - Authorization
             summary: Register
             description:
             requestBody:
@@ -89,7 +89,7 @@ paths:
     /register/verify:
         post:
             tags:
-                - Users
+                - Authorization
             summary: Register - Verify
             description:
             requestBody:
@@ -118,11 +118,32 @@ paths:
                     description: Verify Failed!
                 default:
                     description: Unexpected error
-    /forgot-password:
-        post:
+    /user/show-info:
+        get:
+            security:
+                - BearerAuth: []
             tags:
                 - Users
-            summary: forgot - password
+            summary: Show user info
+            description:
+            responses:
+                '200': # Verify successful
+                    description: Verify successful!
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Verify Failed!
+                default:
+                    description: Unexpected error
+    /user/forgot-password:
+        patch:
+            tags:
+                - Users
+            summary: Forgot - password
             description:
             requestBody:
                 content:
@@ -147,11 +168,11 @@ paths:
                     description: Verify Failed!
                 default:
                     description: Unexpected error
-    /forgot-password/verify:
-        post:
+    /user/forgot-password/verify:
+        patch:
             tags:
                 - Users
-            summary: forgot - password
+            summary: Forgot - password Verify
             description:
             requestBody:
                 content:
@@ -180,8 +201,10 @@ paths:
                 default:
                     description: Unexpected error
 
-    /change-password:
-        post:
+    /user/change-password:
+        patch:
+            security:
+                - BearerAuth: []
             tags:
                 - Users
             summary: Change password
@@ -192,12 +215,9 @@ paths:
                         schema:
                             type: object
                             required:
-                                - username
                                 - password
                                 - newpassword
                             properties:
-                                username:
-                                    type: string
                                 password:
                                     type: string
                                 newpassword:
@@ -215,33 +235,21 @@ paths:
                     description: Change password Failed!
                 default:
                     description: Unexpected error
-    /change-info:
-        post:
+    /user/change-info:
+        patch:
+            security:
+                - BearerAuth: []
             tags:
                 - Users
             summary: Change info
-            description:
+            description: name, email, dob, gender.
             requestBody:
                 content:
                     application/json:
                         schema:
                             type: object
                             required:
-                                - username
-                                - jwt
                             properties:
-                                username:
-                                    type: string
-                                jwt:
-                                    type: string
-                                name:
-                                    type: string
-                                dob:
-                                    type: string
-                                phone:
-                                    type: string
-                                gender:
-                                    type: string
             responses:
                 '200': # Change info successful
                     description: Change info successful
@@ -277,8 +285,6 @@ paths:
                                     type: string
                                 desciption:
                                     type: string
-                                role:
-                                    type: string
             responses:
                 '200': # Create album successful
                     description: Create album successful
@@ -290,5 +296,258 @@ paths:
                                     type: string
                 '500':
                     description: Create album Failed!
+                default:
+                    description: Unexpected error
+    /album/show:
+        get:
+            security:
+                - BearerAuth: []
+            tags:
+                - Album
+            summary: Show Album
+            description:
+            responses:
+                '200': # Show album successful
+                    description: Show album
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Show album Failed!
+                default:
+                    description: Unexpected error
+    /album/update:
+        patch:
+            security:
+                - BearerAuth: []
+            tags:
+                - Album
+            summary: Update album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - albumID
+                            properties:
+                                albumID:
+                                    type: string
+                                description:
+                                    type: string
+            responses:
+                '200': # Update album successful
+                    description: Update album successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Update album Failed!
+                default:
+                    description: Unexpected error
+    /album/delete:
+        delete:
+            security:
+                - BearerAuth: []
+            tags:
+                - Album
+            summary: Delete album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - albumID
+                            properties:
+                                albumID:
+                                    type: string
+            responses:
+                '200': # Delete album successful
+                    description: Delete album successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Delete album Failed!
+                default:
+                    description: Unexpected error
+
+    #######################___________userAlbum___________#######################
+    /album/invite:
+        post:
+            security:
+                - BearerAuth: []
+            tags:
+                - User Album
+            summary: Invite user to album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - invitee
+                                - albumID
+                            properties:
+                                invitee:
+                                    type: string
+                                albumID:
+                                    type: string
+            responses:
+                '200': # Invite successful
+                    description: Invite successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Invite Failed!
+                default:
+                    description: Unexpected error
+    /album/remove:
+        delete:
+            security:
+                - BearerAuth: []
+            tags:
+                - User Album
+            summary: Remove user from album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - invitee
+                                - albumID
+                            properties:
+                                invitee:
+                                    type: string
+                                albumID:
+                                    type: string
+            responses:
+                '200': # Remove successful
+                    description: Remove successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Remove Failed!
+                default:
+                    description: Unexpected error
+
+    #######################___________Photo___________#######################
+    /photo/upload:
+        post:
+            security:
+                - BearerAuth: []
+            tags:
+                - Photo
+            summary: Upload photo
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                image:
+                                    type: string
+                                    format: binary
+
+                description: The file to upload.
+            responses:
+                '200': # Upload successful
+                    description: Upload successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Upload Failed!
+                default:
+                    description: Unexpected error
+    /photo/delete:
+        delete:
+            security:
+                - BearerAuth: []
+            tags:
+                - Photo
+            summary: Delete photo
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - photoID
+                            properties:
+                                photoID:
+                                    type: string
+            responses:
+                '200': # Delete photo successful
+                    description: Delete photo successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Delete photo Failed!
+                default:
+                    description: Unexpected error
+    /photo/addToAlbum:
+        patch:
+            security:
+                - BearerAuth: []
+            tags:
+                - Photo
+            summary: Add photo to album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - photoID
+                                - albumID
+                            properties:
+                                photoID:
+                                    type: string
+                                albumID:
+                                    type: string
+            responses:
+                '200': # Add photo to album successful
+                    description: Add photo to album successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Add photo to album Failed!
                 default:
                     description: Unexpected error

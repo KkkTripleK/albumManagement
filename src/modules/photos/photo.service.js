@@ -3,7 +3,7 @@ const photoRepo = require('./photo.repository');
 const { Error } = require('../../errors/error-handling');
 
 const uploadPhoto = async (req, res) => {
-    const { username } = req.body;
+    const { username } = req.user;
     const fileStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, 'src/assets/image');
