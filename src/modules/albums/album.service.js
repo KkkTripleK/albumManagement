@@ -11,9 +11,8 @@ const checkAlbumExsit = async (albumID) => {
     } catch (error) {
         if (error instanceof ErrorHandling) {
             throw error;
-        } else {
-            throw new ErrorHandling(500, 'AlbumID not exsit!');
         }
+        throw new ErrorHandling(500, 'AlbumID not exsit!');
     }
 };
 

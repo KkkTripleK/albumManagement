@@ -12,7 +12,7 @@
         "indent": "off",
         "no-console": "off",
         "no-use-before-define": "warn",
-        "no-undef": "warn",
+        "no-undef": "off",
         "no-unused-vars": "off",
         "prefer-destructuring": "off",
         "operator-linebreak": "off",

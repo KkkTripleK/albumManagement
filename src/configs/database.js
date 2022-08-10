@@ -5,7 +5,7 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log('___Database is CONNECTED!'))
+    .then()
     .catch((err) => console.log(err));
 
 module.exports = { mongoose };

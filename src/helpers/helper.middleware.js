@@ -1,8 +1,6 @@
 const helperJWT = require('./helper.jwt');
 const { ErrorHandling } = require('../errors/error-handling');
-const userAlbumRepo = require('../modules/users-albums/user-album.repository');
 const userRepo = require('../modules/users/user.repository');
-const photoRepo = require('../modules/photos/photo.repository');
 
 const checkAccessToken = async (req, res, next) => {
     try {
@@ -29,33 +27,6 @@ const checkAccessToken = async (req, res, next) => {
     }
 };
 
-const checkPhotoAlbumExist = async (req, res, next) => {
-    try {
-        const filename = req.body.filename;
-        const resultCheckPhotoAlbumExsit = await photoRepo.checkPhotoAlbumExist(filename);
-        if (resultCheckPhotoAlbumExsit) {
-            throw new ErrorHandling(500, 'Invited Failed!');
-        }
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
-
-const checkOwner = async (req, res, next) => {
-    try {
-        const resultCheckOwner = photoRepo.checkOwner(req, res);
-        if (!resultCheckOwner) {
-            throw new ErrorHandling(500, 'You are not the Owner!');
-        }
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
-
 module.exports = {
     checkAccessToken,
-    checkOwner,
-    checkPhotoAlbumExist,
 };

@@ -29,17 +29,13 @@ async function verifyForgotPassword(req, res) {
     const username = req.body.username;
     await checkActiveUser(username);
     const userInfo = await userRepo.findUserInfo(username);
-    console.log(userInfo.activeCode);
-    console.log(req.body.activeCode);
     if (userInfo === null) {
         throw new ErrorHandling(400, 'Can not find your username!');
     } else if (userInfo.activeCode !== req.body.activeCode) {
         throw new ErrorHandling(500, 'Your active code is not correct!');
     }
     const OTP = createOTP.randomOTP();
-    // hash password -> middleware -> presave
     const newPassword = crypto.createHash('SHA256').update(OTP.toString()).digest('hex');
-    //
     await userRepo.updateParam(username, { password: newPassword });
     return OTP;
 }
@@ -51,9 +47,8 @@ async function createNewUser(userInfo) {
         const resultCreateNewUser = await userRepo.createNewUser(userInfo);
         if (!resultCreateNewUser) {
             throw new Error(500, 'Username already EXIST!');
-        } else {
-            await helperEmail.sendMail(username, email);
         }
+        await helperEmail.sendMail(username, email);
     } catch (error) {
         throw new ErrorHandling(500, 'Create user FAILED!');
     }
@@ -70,9 +65,8 @@ const userRegister = async (req, res) => {
     } catch (error) {
         if (error instanceof ErrorHandling) {
             throw error;
-        } else {
-            throw new ErrorHandling(500, 'Create user FAILED!');
         }
+        throw new ErrorHandling(500, 'Create user FAILED!');
     }
 };
 

@@ -10,9 +10,6 @@ const userLogin = async (req, res, next) => {
         try {
             await authService.checkActiveUser(req.body.username);
         } catch (error) {
-            if (error instanceof ErrorHandling) {
-                throw error;
-            }
             throw new ErrorHandling(500, 'Your username not exist!!');
         }
         res.status(200).json({ accessToken });

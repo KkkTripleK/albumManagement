@@ -65,8 +65,29 @@ const inviteToAlbum = async (req, res) => {
 
 const removeUserFromAlbum = async (req, res) => {
     try {
-        // kiem tra mqh cua user va album
-        // kiem tra mqh cua remover va album
+        await albumService.checkAuthor(req, res);
+        if (req.user.role !== 'Author') {
+            throw new ErrorHandling(500, 'You do not have permission to remove other user from this album!');
+        }
+        const albumID = req.body.albumID;
+        const removeID = req.body.removeID;
+        const rs = await userAlbumRepo.checkInviteeAlbum(albumID, removeID);
+        if (rs === false) {
+            throw new ErrorHandling(500, 'Invitee not exist in the album!');
+        }
+        userAlbumRepo.removeUserFromAlbum(albumID, removeID);
+    } catch (error) {
+        if (error instanceof ErrorHandling) {
+            throw error;
+        } else {
+            throw new ErrorHandling(500, 'Invite to album Failed!');
+        }
+    }
+};
+
+const createUserAlbum = async (req, res) => {
+    try {
+        await userAlbumRepo.createUserAlbum(req.user.username, req.user.id, req.body.role);
     } catch (error) {
         if (error instanceof ErrorHandling) {
             throw error;
@@ -80,4 +101,5 @@ module.exports = {
     deleteUserAlbum,
     inviteToAlbum,
     removeUserFromAlbum,
+    createUserAlbum,
 };

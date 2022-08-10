@@ -551,3 +551,55 @@ paths:
                     description: Add photo to album Failed!
                 default:
                     description: Unexpected error
+    /photo/showPhoto:
+        get:
+            security:
+                - BearerAuth: []
+            tags:
+                - Photo
+            summary: Show all photo
+            description:
+            responses:
+                '200': # Show all photo successful
+                    description: Show photo successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Show photo Failed!
+                default:
+                    description: Unexpected error
+    /photo/showPhotoInAlbum:
+        patch:
+            security:
+                - BearerAuth: []
+            tags:
+                - Photo
+            summary: Show photo in specific album
+            description:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - albumID
+                            properties:
+                                albumID:
+                                    type: string
+            responses:
+                '200': # Show photo in album successful
+                    description: Show photo in album successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                '500':
+                    description: Show photo in album Failed!
+                default:
+                    description: Unexpected error

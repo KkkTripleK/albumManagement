@@ -6,7 +6,7 @@ const userAlbumRepo = require('../users-albums/user-album.repository');
 const createAlbum = async (req, res, next) => {
     try {
         await albumService.createNewAlbum(req, res);
-        await userAlbumRepo.createUserAlbum(req.user.username, req.user.id, req.body.role);
+        await userAlbumService.createUserAlbum(req, res);
         res.status(200).send('Create new album succesful!');
     } catch (error) {
         next(error);
@@ -38,9 +38,9 @@ const deleteAlbum = async (req, res, next) => {
         await albumService.checkAlbumExsit(req.body.albumID);
         await albumService.checkAuthor(req, res);
         console.log(req.user);
-        if (req.user.role !== 'Author') {
-            throw new ErrorHandling(500, 'You are not the Author!');
-        }
+        // if (req.user.role !== 'Author') {
+        //     throw new ErrorHandling(500, 'You are not the Author!');
+        // }
         await albumService.deleteAlbum(req.body.albumID);
         await userAlbumService.deleteUserAlbum(req.body.albumID);
         res.status(200).send('Delete Successful!');

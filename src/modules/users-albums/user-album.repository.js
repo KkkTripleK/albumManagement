@@ -21,9 +21,20 @@ const checkInviteeAlbumExist = async (username, albumID) => {
     return resultCheckExist !== 0;
 };
 
+const checkInviteeAlbum = async (albumID, removeID) => {
+    const resultCheckExist = await ModelUserAlbum.count({ removeID, albumID });
+    return resultCheckExist !== 0;
+};
+
+const removeUserFromAlbum = async (albumID, removeID) => {
+    await ModelUserAlbum.delete({ removeID, albumID });
+};
+
 module.exports = {
     createUserAlbum,
     checkAuthor,
     deleteUserAlbum,
     checkInviteeAlbumExist,
+    checkInviteeAlbum,
+    removeUserFromAlbum,
 };

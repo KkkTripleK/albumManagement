@@ -18,24 +18,36 @@ const deletePhoto = async (path) => {
     });
 };
 
-const findPath = async (filename) => {
-    const photoInfo = await ModelPhoto.findOne({ filename });
+const findPath = async (photoID) => {
+    const photoInfo = await ModelPhoto.findOne({ _id: photoID });
     return photoInfo.path;
 };
 
 const addToAlbum = async (req, res) => {
-    const { filename, albumID } = req.body;
-    await ModelPhoto.updateOne({ filename }, { $set: { albumID } });
+    const { photoID, albumID } = req.body;
+    console.log(photoID);
+    await ModelPhoto.updateOne({ _id: photoID }, { $set: { albumID } });
 };
 
 const checkOwner = async (req, res) => {
-    const resulCheckOwner = await ModelPhoto.count(req.body);
-    return resulCheckOwner !== 0;
+    const resultCheckOwner = await ModelPhoto.count({ _id: req.body.photoID, username: req.user.username });
+    return resultCheckOwner !== 0;
 };
 
-const checkPhotoAlbumExist = async (filename) => {
-    const photoInfo = await ModelPhoto.findOne({ filename });
-    return photoInfo.albumID !== undefined;
+const checkPhotoExist = async (photoID) => {
+    const photoInfo = await ModelPhoto.count({ _id: photoID });
+    return photoInfo;
+};
+
+const showPhoto = async (username) => {
+    const showListPhoto = await ModelPhoto.find({ username });
+    return showListPhoto;
+};
+
+const showPhotoInAlbum = async (username, albumID) => {
+    const showListPhoto = await ModelPhoto.find({ username, albumID });
+    console.log(showListPhoto);
+    return showListPhoto;
 };
 
 module.exports = {
@@ -45,5 +57,7 @@ module.exports = {
     addToAlbum,
     checkOwner,
     findPath,
-    checkPhotoAlbumExist,
+    checkPhotoExist,
+    showPhoto,
+    showPhotoInAlbum,
 };

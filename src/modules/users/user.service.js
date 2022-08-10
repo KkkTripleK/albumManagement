@@ -20,9 +20,8 @@ async function forgotPassword(req, res) {
     const userInfo = await userRepo.findUserInfo(username);
     if (userInfo === null) {
         throw new ErrorHandling(500, 'Can not find your username!');
-    } else {
-        helperEmail.sendMail(username, userInfo.email);
     }
+    helperEmail.sendMail(username, userInfo.email);
 }
 
 async function changePassword(req, res) {
@@ -45,25 +44,24 @@ async function changePassword(req, res) {
     } catch (error) {
         if (error instanceof ErrorHandling) {
             throw error;
-        } else {
-            throw new ErrorHandling(500, 'Old password and new password not correclt!');
         }
+        throw new ErrorHandling(500, 'Old password and new password not correclt!');
     }
 }
 
 async function changeInfo(req, res) {
     try {
         const param = req.body;
-        if (req.body.username.length !== 0 || req.body.password.length !== 0) {
+        if (req.user.username.length !== 0 || req.body.password.length !== 0) {
             throw new ErrorHandling(400, 'Can not change username and password!');
         }
         userRepo.updateParam(req.user.username, param);
     } catch (error) {
+        console.log(error);
         if (error instanceof ErrorHandling) {
             throw error;
-        } else {
-            throw new ErrorHandling(400, 'Update FAILED!');
         }
+        throw new ErrorHandling(400, 'Update FAILED!');
     }
 }
 
